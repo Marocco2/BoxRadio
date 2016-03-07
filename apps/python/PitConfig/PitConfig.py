@@ -501,7 +501,7 @@ def acUpdate(deltaT):
     if Speed < 0.1 and DoPit == 0:
         Position = ac.getCarState(0,acsys.CS.NormalizedSplinePosition)
         sim_info_obj = sim_info.SimInfo()
-		Session = sim_info_obj.graphics.session
+        Session = sim_info_obj.graphics.session
         InPit = sim_info_obj.graphics.isInPit
         FuelIn = int(sim_info_obj.physics.fuel)
         if (InitialPosition-0.001 < Position < InitialPosition+0.001) or InPit == 1 and Session == 2:
@@ -526,7 +526,7 @@ def WritePreset():
     Car = PresetConfig['PRESET'+str(Preset)]['car']
     if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car == ac.getCarName(0):
         PresetConfig.set('PRESET','num',Preset)
-	PresetConfig.set('PRESET'+str(Preset),'car',ac.getCarName(0))
+        PresetConfig.set('PRESET'+str(Preset),'car',ac.getCarName(0))
         PresetConfig.set('PRESET'+str(Preset),'tyre',Tires)
         PresetConfig.set('PRESET'+str(Preset),'fuel',str(Gas))
         PresetConfig.set('PRESET'+str(Preset),'body',FixBody)

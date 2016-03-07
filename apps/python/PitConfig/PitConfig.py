@@ -641,4 +641,4 @@ def Preset4Event(name, state):
 
 def acShutdown():
     WritePreset()
-	subprocess.Popen.kill(["apps\python\PitConfig\Hotkey.exe"])
+    subprocess.Popen.kill(["apps\python\PitConfig\Hotkey.exe"])

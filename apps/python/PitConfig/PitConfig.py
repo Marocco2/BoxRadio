@@ -511,6 +511,8 @@ def acUpdate(deltaT):
     if Speed >= 0.1:
         DoPit = 0
 
+    ReadPreset()
+
 def left_click(x, y):
     SetCursorPos(x, y)
     mouse_event(2, 0, 0, 0, 0)
@@ -522,10 +524,9 @@ def WritePreset():
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
     Car = PresetConfig['PRESET'+str(Preset)]['car']
-	Preset = PresetConfig['PRESET'][str(Preset)]
     if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car == ac.getCarName(0):
-        PresetConfig.set('PRESET',str(Preset),Preset)
-		PresetConfig.set('PRESET'+str(Preset),'car',ac.getCarName(0))
+        PresetConfig.set('PRESET','num',Preset)
+	PresetConfig.set('PRESET'+str(Preset),'car',ac.getCarName(0))
         PresetConfig.set('PRESET'+str(Preset),'tyre',Tires)
         PresetConfig.set('PRESET'+str(Preset),'fuel',str(Gas))
         PresetConfig.set('PRESET'+str(Preset),'body',FixBody)
@@ -542,8 +543,29 @@ def ReadPreset():
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
     Car = PresetConfig['PRESET'+str(Preset)]['car']
-	Preset = PresetConfig['PRESET'][str(Preset)]
+    Preset = PresetConfig['PRESET']['num']
 
+    if Preset == 1:
+        ac.setValue(Preset1, 1)
+        ac.setValue(Preset2, 0)
+        ac.setValue(Preset3, 0)
+        ac.setValue(Preset4, 0)
+    elif Preset == 2:
+        ac.setValue(Preset1, 0)
+        ac.setValue(Preset2, 1)
+        ac.setValue(Preset3, 0)
+        ac.setValue(Preset4, 0)
+    elif Preset == 3:
+        ac.setValue(Preset1, 0)
+        ac.setValue(Preset2, 0)
+        ac.setValue(Preset3, 1)
+        ac.setValue(Preset4, 0)
+    elif Preset == 4:
+        ac.setValue(Preset1, 0)
+        ac.setValue(Preset2, 0)
+        ac.setValue(Preset3, 0)
+        ac.setValue(Preset4, 1)
+	
     if Car == ac.getCarName(0):
         ac.setValue(FuelSelection,int(PresetConfig['PRESET'+str(Preset)]['fuel']))
 

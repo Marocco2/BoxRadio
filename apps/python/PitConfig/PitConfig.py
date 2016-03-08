@@ -38,8 +38,8 @@ version = "1.1"
 r = requests.get('https://api.github.com/repos/Marocco2/PitConfig-Marocco2-version/releases/latest')
 request = r.json()
 lastversion = request['tag_name']
-if version == lastversion
-    subprocess.Popen(["apps\python\PitConfig\Updater.exe"])
+if version == lastversion:
+    subprocess.Popen(["apps\python\PitConfig\CheckNewVersion.exe"])
 
 user32 = ctypes.windll.user32
 Resolution = user32.GetSystemMetrics(0)

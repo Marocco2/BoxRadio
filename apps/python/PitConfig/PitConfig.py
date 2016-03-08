@@ -1,5 +1,5 @@
 ##############################################################
-# PitConfig Ver. 1.4
+# PitConfig Marocco2 version
 #
 #
 #
@@ -19,6 +19,8 @@ import os.path
 import datetime
 import subprocess
 import configparser
+import json
+import requests
 import shutil
 import codecs
 import platform
@@ -32,6 +34,13 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 import ctypes
 from PitConfig_lib import sim_info
 
+version = "1.1"
+r = requests.get('https://api.github.com/repos/Marocco2/PitConfig-Marocco2-version/releases/latest')
+request = r.json()
+lastversion = request['tag_name']
+if version == lastversion
+    subprocess.Popen(["apps\python\PitConfig\Updater.exe"])
+
 user32 = ctypes.windll.user32
 Resolution = user32.GetSystemMetrics(0)
 SetCursorPos = ctypes.windll.user32.SetCursorPos
@@ -42,6 +51,7 @@ CSIDL_PERSONAL = 5       # My Documents
 SHGFP_TYPE_CURRENT = 0   # Get default value
 buf= ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
 ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
+ac.log('PitConfig Marocco2 version' + str(version))
 ac.log('PitConfig: Log path: ' + buf.value)
 OptionLabel = ['','','','','','']
 i = 1
@@ -526,7 +536,6 @@ def WritePreset():
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
     Car = PresetConfig['PRESET'+str(Preset)]['car']
     if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car == ac.getCarName(0):
-        PresetConfig.set('HOTKEY','key',hotkey)
         PresetConfig.set('PRESET','num',Preset)
         PresetConfig.set('PRESET'+str(Preset),'car',ac.getCarName(0))
         PresetConfig.set('PRESET'+str(Preset),'tyre',Tires)

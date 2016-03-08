@@ -116,6 +116,7 @@ if UiSize < 1:
 elif UiSize > 3:
     UiSize = 3
 
+hotkey = "h"
 Tirecoord = int(Resolution / 2 - 247)
 Fuelcoord = int(Resolution / 2 + 100)
 FuelAdd = 0
@@ -525,6 +526,7 @@ def WritePreset():
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
     Car = PresetConfig['PRESET'+str(Preset)]['car']
     if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car == ac.getCarName(0):
+        PresetConfig.set('HOTKEY','key',hotkey)
         PresetConfig.set('PRESET','num',Preset)
         PresetConfig.set('PRESET'+str(Preset),'car',ac.getCarName(0))
         PresetConfig.set('PRESET'+str(Preset),'tyre',Tires)
@@ -534,16 +536,18 @@ def WritePreset():
         PresetConfig.set('PRESET'+str(Preset),'suspen',FixSuspen)
         with open('apps\python\PitConfig\PitConfig.ini', 'w') as configfile:
             configfile.write(';Set "FUEL / add" to "1" to ADD the fuel to the amount already in the tank or set to "0" to fill the tank up to the amount selected on the app.' + '\n')
-            configfile.write(';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
+            configfile.write(';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n')
+            configfile.write(';Hotkey changes preset on fly' + '\n' + '\n')
             PresetConfig.write(configfile)
 
 def ReadPreset():
-    global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
+    global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas, hotkey
 
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
-    Car = PresetConfig['PRESET'+str(Preset)]['car']
+    hotkey = PresetConfig['HOTKEY']['key']
     Preset = PresetConfig['PRESET']['num']
+    Car = PresetConfig['PRESET'+str(Preset)]['car']
 
     if Preset == 1:
         ac.setValue(Preset1, 1)

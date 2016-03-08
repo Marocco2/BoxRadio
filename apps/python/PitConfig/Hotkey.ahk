@@ -11,7 +11,7 @@ return
 Prs:
 IniRead, preset, PitConfig.ini, PRESET, num, 1
 preset := ++preset
-if preset = 4
+if preset = 5
 	preset = 1
 IniWrite, %preset%, PitConfig.ini, PRESET, num
 return

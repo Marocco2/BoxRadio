@@ -8,9 +8,11 @@
 ###Expected behavior
 
 - Something
+
 ###Actual behavior
 
 - Something
+
 ###Steps to reproduce the behavior
 1. Step One
 2. Step Two

@@ -3,6 +3,11 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-UrlDownloadToFile, https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-version/master/apps/python/PitConfig/Hotkey.exe, Hotkey.exe
-UrlDownloadToFile, https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-version/master/apps/python/PitConfig/PitConfig.py, PitConfig.py
+FileRead, CurrVer, version.txt
+UrlDownloadToFile, https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-version/master/apps/python/PitConfig/version.txt, version.txt
+FileRead, NewVer, version.txt
+if (CurrVer != NewVer)
+	UrlDownloadToFile, https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-version/%NewVer%/apps/python/PitConfig/Hotkey.exe, Hotkey.exe
+	UrlDownloadToFile, https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-version/%NewVer%/apps/python/PitConfig/PitConfig.py, PitConfig.py
+	UrlDownloadToFile, https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-version/%NewVer%/apps/python/PitConfig/CheckNewVersion.exe, CheckNewVersion.exe
 Exit

@@ -38,7 +38,7 @@ version = "1.1"
 #request = r.json()
 #lastversion = request['tag_name']
 #if version != lastversion:
-#subprocess.Popen(["apps\python\PitConfig\CheckNewVersion.exe"])
+subprocess.Popen(["apps\python\PitConfig\CheckNewVersion.exe"])
 
 user32 = ctypes.windll.user32
 Resolution = user32.GetSystemMetrics(0)
@@ -50,7 +50,7 @@ CSIDL_PERSONAL = 5       # My Documents
 SHGFP_TYPE_CURRENT = 0   # Get default value
 buf= ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
 ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
-ac.log('PitConfig Marocco2 version' + str(version))
+ac.log('PitConfig Marocco2 version ' + str(version))
 ac.log('PitConfig: Log path: ' + buf.value)
 #Check AC Resolution
 if os.path.isfile(buf.value+'/Assetto Corsa/cfg/video.ini'):

@@ -33,7 +33,7 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 import ctypes
 from PitConfig_lib import sim_info
 
-version = "1.1"
+version = "1.2"
 #r = get('https://api.github.com/repos/Marocco2/PitConfig-Marocco2-version/releases/latest')
 #request = r.json()
 #lastversion = request['tag_name']
@@ -71,7 +71,7 @@ else:
 OptionLabel = ['','','','','','']
 i = 1
 
-subprocess.Popen(["apps\python\PitConfig\Hotkey.exe"])
+superhot = subprocess.Popen(["apps\python\PitConfig\Hotkey.exe"])
 
 now = (datetime.datetime.utcnow() - datetime.datetime(1970,1,1)).total_seconds() - 120
 ac.log('PitConfig: Current time: '+ str(now))
@@ -564,6 +564,7 @@ def acUpdate(deltaT):
 
         if Speed >= 0.1:
             DoPit = 0
+        LookAtPreset()
 
     except Exception as e:
         ac.log("StreamStanding: Error in acUpdate: %s" % e)
@@ -574,6 +575,19 @@ def left_click(x, y):
     mouse_event(2, 0, 0, 0, 0)
     mouse_event(4, 0, 0, 0, 0)
 
+def LookAtPreset():
+    PresetConfig = configparser.ConfigParser()
+    PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
+    selectpreset = PresetConfig['PRESET']['num']
+    if selectpreset == "1":
+        Preset1Event('name',0)
+    elif selectpreset == "2":
+        Preset2Event('name',0)
+    elif selectpreset == "3":
+        Preset3Event('name',0)
+    elif selectpreset == "4":
+        Preset4Event('name',0)
+
 def WritePreset():
     global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
 
@@ -581,7 +595,6 @@ def WritePreset():
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
     Car = PresetConfig['PRESET'+str(Preset)]['car']
     if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car == ac.getCarName(0):
-        PresetConfig.set('PRESET','num',Preset)
         PresetConfig.set('PRESET'+str(Preset),'car',ac.getCarName(0))
         PresetConfig.set('PRESET'+str(Preset),'tyre',Tires)
         PresetConfig.set('PRESET'+str(Preset),'fuel',str(Gas))
@@ -673,8 +686,8 @@ def Preset2Event(name, state):
 def Preset3Event(name, state):
     global Preset
 
-
     WritePreset()
+
     Preset = 3
     ac.setValue(Preset1, 0)
     ac.setValue(Preset2, 0)
@@ -685,7 +698,6 @@ def Preset3Event(name, state):
 
 def Preset4Event(name, state):
     global Preset
-
 
     WritePreset()
     Preset = 4
@@ -698,7 +710,7 @@ def Preset4Event(name, state):
 
 def acShutdown():
     WritePreset()
-    subprocess.Popen.kill(["apps\python\PitConfig\Hotkey.exe"])
+    subprocess.Popen.kill(superhot)
 
 
 def CoordAdjust():

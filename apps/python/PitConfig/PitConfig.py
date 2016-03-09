@@ -53,6 +53,22 @@ buf= ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
 ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
 ac.log('PitConfig Marocco2 version' + str(version))
 ac.log('PitConfig: Log path: ' + buf.value)
+#Check AC Resolution
+if os.path.isfile(buf.value+'/Assetto Corsa/cfg/video.ini'):
+    videoconfig = configparser.ConfigParser()
+    videoconfig.read(buf.value+'/Assetto Corsa/cfg/video.ini')
+    Resolution = int(videoconfig['VIDEO']['WIDTH'])
+    ResolutionHeight = int(videoconfig['VIDEO']['HEIGHT'])
+    FullScreen = videoconfig.getboolean('VIDEO', 'FULLSCREEN')
+    ac.log('PitConfig: Resolution on video.ini: ' + str(Resolution))
+    ac.log('PitConfig: FullScreen on video.ini: ' + str(FullScreen))
+else:
+    Resolution = ctypes.windll.user32.GetSystemMetrics(0)
+    ResolutionHeight = ctypes.windll.user32.GetSystemMetrics(1)
+    ac.log('PitConfig: Resolution on SystemMetrics: ' + str(Resolution))
+    FullScreen = True
+
+#Read Tyre Compounds
 OptionLabel = ['','','','','','']
 i = 1
 
@@ -80,7 +96,7 @@ if filetime >= now:
         if TyreLine[:14] == 'TYRE COMPOUND:':
             TyreShort = TyreLine[-5:-3]
             OptionLabel[i] = TyreShort.strip('(')
-            ac.log('PitConfig: '+ TyreLine)
+            ac.log('PitConfig: '+ TyreLine[:-1])
             i = i + 1
 
         elif TyreLine[:19] == 'Loading engine file':
@@ -125,7 +141,14 @@ if UiSize < 1:
     UiSize = 1
 elif UiSize > 3:
     UiSize = 3
+if Resolution == ctypes.windll.user32.GetSystemMetrics(0) or ResolutionHeight == ctypes.windll.user32.GetSystemMetrics(1):
+    leftbordersize =  0
+    topbordersize =  0
+else:
+    leftbordersize =  float(configini['WINDOWMODE']['leftbordersize'])
+    topbordersize =  float(configini['WINDOWMODE']['topbordersize'])
 
+#Variables initial value
 hotkey = "h"
 Tirecoord = int(Resolution / 2 - 247)
 Fuelcoord = int(Resolution / 2 + 100)
@@ -142,9 +165,12 @@ FixBody = "no"
 FixEngine = "no"
 FixSuspen = "no"
 DoPit = 1
-InitialPosition = 0
 InPit = 0
 Preset = 1
+adjust_x = 0
+adjust_y = 0
+PitX,PitY,PitZ = 0,0,0 #Pitbox co-ords
+AppInitialised = False #bool so can set app info on first run
 
 def acMain(ac_version):
     global appWindow,FuelSelection,FuelLabel,NoChange,Option1
@@ -473,56 +499,76 @@ def SuspensionEvent(name, state):
         ac.setBackgroundTexture(Suspension,"content/gui/pitstop/repair_sus_OFF.png")
 
 def PitStop():
-    global Resolution,Tirecoord,FuelMax,FuelAdd,Gas,u,Suspensioncoord,Bodycoord,Enginecoord,FuelOption,FuelIn
+    global Resolution,Tirecoord,FuelMax,FuelAdd,Gas,u,Suspensioncoord,Bodycoord,Enginecoord,FuelOption,FuelIn,adjust_x,adjust_y,FullScreen
 
-    left_click(Tirecoord, 140)
-    left_click(Tirecoord, 140)
+    if FullScreen == False:
+        CoordAdjust()
+
+    left_click(Tirecoord + adjust_x, 140 + adjust_y)
+    left_click(Tirecoord + adjust_x, 140 + adjust_y)
     u = 0
     FuelAdd = int(Gas)
     if FuelAdd == FuelMax:
-        left_click(int(Resolution/2+250),300)
+        left_click(int(Resolution/2+250) + adjust_x,300 + adjust_y)
     else:
         if FuelOption == 1:
             while u < FuelAdd:
-                left_click(Fuelcoord,300)
+                left_click(Fuelcoord + adjust_x,300 + adjust_y)
                 u = u + 1
         else:
             while u < FuelAdd - FuelIn:
-                left_click(Fuelcoord,300)
+                left_click(Fuelcoord + adjust_x,300 + adjust_y)
                 u = u + 1
 
-    left_click(Suspensioncoord, 465)
-    left_click(Bodycoord, 465)
-    left_click(Enginecoord, 465)
-    left_click(int(Resolution/2+158), 620)
+    left_click(Suspensioncoord + adjust_x, 465 + adjust_y)
+    left_click(Bodycoord + adjust_x, 465 + adjust_y)
+    left_click(Enginecoord + adjust_x, 465 + adjust_y)
+    left_click(int(Resolution/2+158) + adjust_x, 620 + adjust_y)
 
 def acUpdate(deltaT):
-    global Position,InitialPosition,Speed,DoPit,FuelMax,InPit,FuelIn
+    try:
+        global Speed,DoPit,FuelMax,InPit,FuelIn,session, delta #Position,InitialPosition  vars can be removed from the code
+        global PitX,PitY,PitZ #added global variables intiliased as 0,0,0. X,Y,Z co-ords of pit box
+        global AppInitialised #added global variable intiliased as False
 
-    if InitialPosition == 0:
-        sim_info_obj = sim_info.SimInfo()
-        FuelMax = int(sim_info_obj.static.maxFuel)
-        ac.setRange(FuelSelection,0,FuelMax)
-        InitialPosition = ac.getCarState(0,acsys.CS.NormalizedSplinePosition)
-        ReadPreset()
-        ac.setValue(Preset1,1)
+        if not AppInitialised:  #First call to app, set variables
+            sim_info_obj = sim_info.SimInfo()
+            session = sim_info_obj.graphics.session #session number, 2 is race
+            InPit = sim_info_obj.graphics.isInPit
+            FuelMax = int(sim_info_obj.static.maxFuel)
+            ac.setRange(FuelSelection,0,FuelMax)
+            if session != 2 or InPit: #ideally want to set pit box position in quali or practice, could join a race session on the grid
+                PitX,PitY,PitZ = ac.getCarState(0, acsys.CS.WorldPosition)
+                ac.log("PitConfig: Pit position initialized at X:" + str(PitX) + " Y:" + str(PitY) + " Z:" + str(PitZ))
+            ReadPreset()
+            ac.setValue(Preset1,1)
+            AppInitialised = True
 
-    Speed = ac.getCarState(0,acsys.CS.SpeedKMH)
+        if PitX == 0 and InPit: #set pit position correctly if not set before
+            PitX,PitY,PitZ = ac.getCarState(0, acsys.CS.WorldPosition)
+            ac.log("PitConfig: Pit position initialized later at X:" + str(PitX) + " Y:" + str(PitY) + " Z:" + str(PitZ))
 
-    if Speed < 0.1 and DoPit == 0:
-        Position = ac.getCarState(0,acsys.CS.NormalizedSplinePosition)
-        sim_info_obj = sim_info.SimInfo()
-        Session = sim_info_obj.graphics.session
-        InPit = sim_info_obj.graphics.isInPit
-        FuelIn = int(sim_info_obj.physics.fuel)
-        if (InitialPosition-0.001 < Position < InitialPosition+0.001) or InPit == 1 and Session == 2:
+        Speed = ac.getCarState(0,acsys.CS.SpeedKMH)
+
+        if Speed < 0.1 and DoPit == 0:
+            sim_info_obj = sim_info.SimInfo()
+            session = sim_info_obj.graphics.session #session number, 2 is race
+            if session == 2:
+                PosX,PosY,PosZ = ac.getCarState(0, acsys.CS.WorldPosition)          #current co-ord position
+                delta = ((PosX-PitX)**2 + (PosY-PitY)**2 + (PosZ-PitZ)**2)**0.5     #straight line dist between pitbox and car
+                FuelIn = int(sim_info_obj.physics.fuel)
+                if delta<8.0 or InPit == 1: #if InPit or within 8m of pitbox, quite relaxed limit guarantees app trigger on menu appear
+                    PitStop()
+                    ac.log("PitConfig: Pit performed at X:" + str(PosX) + " Y:" + str(PosY) + " Z:" + str(PosZ))
+                    ac.log("PitConfig: Delta:" + str(delta))
             DoPit = 1
-            PitStop()
 
-    if Speed >= 0.1:
-        DoPit = 0
+        if Speed >= 0.1:
+            DoPit = 0
 
-    ReadPreset()
+    except Exception as e:
+        ac.log("StreamStanding: Error in acUpdate: %s" % e)
+
 
 def left_click(x, y):
     SetCursorPos(x, y)
@@ -677,3 +723,33 @@ def Preset4Event(name, state):
 def acShutdown():
     WritePreset()
     subprocess.Popen.kill(["apps\python\PitConfig\Hotkey.exe"])
+
+
+def CoordAdjust():
+    global adjust_x, adjust_y, leftbordersize, topbordersize, Resolution, FindWindow
+
+    class RECT(ctypes.Structure):
+        _fields_ = [
+        ('left', ctypes.c_int),
+        ('top', ctypes.c_int),
+        ('right', ctypes.c_int),
+        ('bottom', ctypes.c_int)
+        ]
+
+    GetWindowRect = ctypes.windll.user32.GetWindowRect
+    rect = RECT()
+
+    FindWindow = ctypes.windll.user32.FindWindowA
+    ACWindow = FindWindow(b'acsW',0)
+    ac.log('PitConfig: Handle: ' + str(ACWindow))
+
+    #GetWindowRect(foreground_window, ctypes.byref(rect))
+    GetWindowRect(ACWindow, ctypes.byref(rect))
+    Resolution = int(rect.right - rect.left - 2 * leftbordersize)
+    ac.log('PitConfig: New Resolution: ' + str(Resolution))
+    adjust_x = int(rect.left + leftbordersize)
+    adjust_y = int(rect.top + topbordersize)
+    ac.log('PitConfig: Res: Top '+ str(adjust_y)+ ' Left: ' + str(adjust_x))
+    WritePreset()
+    ReadPreset()
+

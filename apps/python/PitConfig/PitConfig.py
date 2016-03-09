@@ -19,8 +19,7 @@ import os.path
 import datetime
 import subprocess
 import configparser
-import json
-import requests
+#from requests import get
 import shutil
 import codecs
 import platform
@@ -35,11 +34,11 @@ import ctypes
 from PitConfig_lib import sim_info
 
 version = "1.1"
-r = requests.get('https://api.github.com/repos/Marocco2/PitConfig-Marocco2-version/releases/latest')
-request = r.json()
-lastversion = request['tag_name']
-if version != lastversion:
-    subprocess.Popen(["apps\python\PitConfig\CheckNewVersion.exe"])
+#r = get('https://api.github.com/repos/Marocco2/PitConfig-Marocco2-version/releases/latest')
+#request = r.json()
+#lastversion = request['tag_name']
+#if version != lastversion:
+#subprocess.Popen(["apps\python\PitConfig\CheckNewVersion.exe"])
 
 user32 = ctypes.windll.user32
 Resolution = user32.GetSystemMetrics(0)
@@ -600,31 +599,8 @@ def ReadPreset():
 
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
-    hotkey = PresetConfig['HOTKEY']['key']
-    Preset = PresetConfig['PRESET']['num']
     Car = PresetConfig['PRESET'+str(Preset)]['car']
 
-    if Preset == 1:
-        ac.setValue(Preset1, 1)
-        ac.setValue(Preset2, 0)
-        ac.setValue(Preset3, 0)
-        ac.setValue(Preset4, 0)
-    elif Preset == 2:
-        ac.setValue(Preset1, 0)
-        ac.setValue(Preset2, 1)
-        ac.setValue(Preset3, 0)
-        ac.setValue(Preset4, 0)
-    elif Preset == 3:
-        ac.setValue(Preset1, 0)
-        ac.setValue(Preset2, 0)
-        ac.setValue(Preset3, 1)
-        ac.setValue(Preset4, 0)
-    elif Preset == 4:
-        ac.setValue(Preset1, 0)
-        ac.setValue(Preset2, 0)
-        ac.setValue(Preset3, 0)
-        ac.setValue(Preset4, 1)
-	
     if Car == ac.getCarName(0):
         ac.setValue(FuelSelection,int(PresetConfig['PRESET'+str(Preset)]['fuel']))
 
@@ -671,8 +647,8 @@ def ReadPreset():
 def Preset1Event(name, state):
     global Preset
 
-    WritePreset()
 
+    WritePreset()
     Preset = 1
     ac.setValue(Preset1, 1)
     ac.setValue(Preset2, 0)
@@ -684,11 +660,11 @@ def Preset1Event(name, state):
 def Preset2Event(name, state):
     global Preset
 
-    WritePreset()
 
+    WritePreset()
     Preset = 2
-    ac.setValue(Preset2, 1)
     ac.setValue(Preset1, 0)
+    ac.setValue(Preset2, 1)
     ac.setValue(Preset3, 0)
     ac.setValue(Preset4, 0)
 
@@ -697,12 +673,12 @@ def Preset2Event(name, state):
 def Preset3Event(name, state):
     global Preset
 
-    WritePreset()
 
+    WritePreset()
     Preset = 3
-    ac.setValue(Preset3, 1)
     ac.setValue(Preset1, 0)
     ac.setValue(Preset2, 0)
+    ac.setValue(Preset3, 1)
     ac.setValue(Preset4, 0)
 
     ReadPreset()
@@ -710,13 +686,13 @@ def Preset3Event(name, state):
 def Preset4Event(name, state):
     global Preset
 
-    WritePreset()
 
+    WritePreset()
     Preset = 4
-    ac.setValue(Preset4, 1)
     ac.setValue(Preset1, 0)
     ac.setValue(Preset2, 0)
     ac.setValue(Preset3, 0)
+    ac.setValue(Preset4, 1)
 
     ReadPreset()
 

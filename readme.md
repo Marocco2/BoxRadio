@@ -1,9 +1,9 @@
-#PitConfig Marocco2 version (M2V) V1
+# PitConfig Marocco2 plugin (M2P) V1.2
 
 Based on the Pit Menu (by NAGP MadMac) and [PitConfig](http://www.assettocorsa.net/forum/index.php?threads/pitconfig.28683/), this modified version has the following characteristics:
 
 - The app is used to configure the work to be performed on the pit prior to stopping the car on the pit spot. Note: Pit Stops are available only in Multiplayer at the moment.
-- Works on any screen resolution (may not work in window mode).
+- Works on any screen resolution.
 - ~~Does not require any external executable. All code is in the python module.~~
 - **It's self-updating**
 - Identifies the tyres available for original AC cars and mod cars.
@@ -16,15 +16,19 @@ Based on the Pit Menu (by NAGP MadMac) and [PitConfig](http://www.assettocorsa.n
 
 Just install and activate as any other AC app.
 
-###M2V V1.2
+###M2P V1.2
 - Fixed hotkey not working
 - Bug: Cannot select preset with mouse, only hotkey
 - Redone update logic
 
-###M2V V1.1
+### V1.5
+ - Improved pit box detection. Solves the problems reported when driving backwards (after missing the stop position) and pit spots around the finish line (thanks to Esotic and AdderSwim).
+ - Now PitConfig supports Window Mode.
+
+###M2P V1.1
 - Now PitConfig will update itself.
 
-###M2V V1
+###M2P V1
 - Adds an hotkey (keyboard or joystick input) to switch preset on-the-fly
 
 ###V1.4

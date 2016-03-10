@@ -5,15 +5,15 @@
 - AC Version:
 - PitConfig version:
 
-###Expected behavior
+### Expected behavior
 
 - Something
 
-###Actual behavior
+### Actual behavior
 
 - Something
 
-###Steps to reproduce the behavior
+### Steps to reproduce the behavior
 1. Step One
 2. Step Two
 3. Step Three

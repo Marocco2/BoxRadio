@@ -33,7 +33,7 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 import ctypes
 from PitConfig_lib import sim_info
 
-version = "1.2"
+version = "1.2.1"
 #r = get('https://api.github.com/repos/Marocco2/PitConfig-Marocco2-version/releases/latest')
 #request = r.json()
 #lastversion = request['tag_name']
@@ -687,7 +687,6 @@ def Preset3Event(name, state):
     global Preset
 
     WritePreset()
-
     Preset = 3
     ac.setValue(Preset1, 0)
     ac.setValue(Preset2, 0)
@@ -709,6 +708,7 @@ def Preset4Event(name, state):
     ReadPreset()
 
 def acShutdown():
+    global superhot
     WritePreset()
     subprocess.Popen.kill(superhot)
 

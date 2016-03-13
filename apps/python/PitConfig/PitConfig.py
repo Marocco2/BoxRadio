@@ -34,9 +34,8 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 
 import ctypes
 from PitConfig_lib import sim_info
-from PitConfig_lib import pahk
 
-version = "1.3"
+version = "1.3.1"
 #r = get('https://api.github.com/repos/Marocco2/PitConfig-Marocco2-version/releases/latest')
 #request = r.json()
 #lastversion = request['tag_name']

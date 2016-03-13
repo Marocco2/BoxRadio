@@ -20,7 +20,6 @@ import datetime
 import subprocess
 import configparser
 #from requests import get
-import urllib.request
 import json
 import shutil
 import codecs
@@ -33,6 +32,7 @@ sys.path.insert(0, sysdir)
 os.environ['PATH'] = os.environ['PATH'] + ";."
 
 import ctypes
+import urllib.request as get
 from PitConfig_lib import sim_info
 
 version = "1.3.1"
@@ -40,14 +40,14 @@ version = "1.3.1"
 #request = r.json()
 #lastversion = request['tag_name']
 #if version != lastversion:
-request = urllib.request.urlopen("https://api.github.com/repos/Marocco2/PitConfig-Marocco2-plugin/releases/latest")
+request = get.urlopen("https://api.github.com/repos/Marocco2/PitConfig-Marocco2-plugin/releases/latest")
 tag_name = json.load(request)
 lastversion = tag_name['tag_name']
 OTAini = configparser.ConfigParser()
 OTAini.read('apps\python\PitConfig\PitConfig.ini')
 OTA = OTAini['AUTOUPDATE']['Enable']
 if version != lastversion and OTA == 1:
-    urllib.request.urlrequest("https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-plugin/"+str(lastversion)+"/apps/python/PitConfig/PitConfig.py", "PitConfig.py")
+    get.urlrequest("https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-plugin/" + str(lastversion) + "/apps/python/PitConfig/PitConfig.py", "PitConfig.py")
 
 
 user32 = ctypes.windll.user32

@@ -1,23 +1,22 @@
 ##############################################################
-# PitConfig Marocco2 version
+# PitConfig Ver. 1.7.1
 #
 #
 #
-# Thanks to NAGP MadMac
+# Thanks to NAGP MadMac and AdderSwim
 #
 #
 # To activate create a folder with the same name as this file
 # in apps/python. Ex apps/python/PitConfig
 # Then copy this file inside it and launch AC
 #############################################################
-
+ 
 import ac
 import acsys
 import sys
 import os
 import os.path
 import datetime
-import subprocess
 import configparser
 import shutil
 import codecs
@@ -27,39 +26,26 @@ if platform.architecture()[0] == "64bit":
 else:
     sysdir=os.path.dirname(__file__)+'/stdlib'
 sys.path.insert(0, sysdir)
-pitlib = os.path.dirname(__file__)+'/PitConfig_lib'
-sys.path.insert(0, pitlib)
 os.environ['PATH'] = os.environ['PATH'] + ";."
-
+ 
 import ctypes
-from PitConfig_lib import sim_info
-from PitConfig_lib.requests import api
+ 
+from PitConfig_lib.sim_info import info
 
-version = "1.3.2"
-r = api.get('https://api.github.com/repos/Marocco2/PitConfig-Marocco2-version/releases/latest')
-request = r.json()
-lastversion = request['tag_name']
-OTAini = configparser.ConfigParser()
-OTAini.read('apps\python\PitConfig\PitConfig.ini')
-OTA = OTAini['AUTOUPDATE']['Enable']
-if version != lastversion and OTA == 1:
-    pitconfig_py = api.get("https://raw.githubusercontent.com/Marocco2/PitConfig-Marocco2-plugin/" + str(lastversion) + "/apps/python/PitConfig/PitConfig.py")
-    with open("PitConfig.py", "wb") as code:
-        code.write(pitconfig_py.content)
+import PitConfig_lib.win32con
+import threading
 
-
-user32 = ctypes.windll.user32
-Resolution = user32.GetSystemMetrics(0)
 SetCursorPos = ctypes.windll.user32.SetCursorPos
 mouse_event = ctypes.windll.user32.mouse_event
-
+ 
+#Check My Documments location
 from ctypes import wintypes
 CSIDL_PERSONAL = 5       # My Documents
 SHGFP_TYPE_CURRENT = 0   # Get default value
 buf= ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
 ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
-ac.log('PitConfig Marocco2 version ' + str(version))
 ac.log('PitConfig: Log path: ' + buf.value)
+ 
 #Check AC Resolution
 if os.path.isfile(buf.value+'/Assetto Corsa/cfg/video.ini'):
     videoconfig = configparser.ConfigParser()
@@ -74,41 +60,39 @@ else:
     ResolutionHeight = ctypes.windll.user32.GetSystemMetrics(1)
     ac.log('PitConfig: Resolution on SystemMetrics: ' + str(Resolution))
     FullScreen = True
-
+ 
 #Read Tyre Compounds
 OptionLabel = ['','','','','','']
 i = 1
-
-superhot = subprocess.Popen(["apps\python\PitConfig\Hotkey.exe"])
-
+ 
 now = (datetime.datetime.utcnow() - datetime.datetime(1970,1,1)).total_seconds() - 120
 ac.log('PitConfig: Current time: '+ str(now))
-
+ 
 filetime = 0
 logfound = 'No'
-
+ 
 if os.path.isfile(buf.value+'\Assetto Corsa\logs\log.txt'):
     filetime = os.path.getmtime(buf.value+'\Assetto Corsa\logs\log.txt')
     logfound = 'Date'
     ac.log('PitConfig: Log file time: '+ str(filetime))
-
+ 
 if filetime >= now:
     shutil.copyfile(buf.value+'\Assetto Corsa\logs\log.txt', 'apps\python\PitConfig\AClog.txt')
     ac.log('PitConfig: Log file copy Ok')
     log = codecs.open('apps\python\PitConfig\AClog.txt', 'r', encoding='ascii', errors='ignore')
     ac.log('PitConfig: Log file Decode Ok')
     logfound = 'Ok'
-
+ 
     for TyreLine in log:
         if TyreLine[:14] == 'TYRE COMPOUND:':
             TyreShort = TyreLine[-5:-3]
             OptionLabel[i] = TyreShort.strip('(')
             ac.log('PitConfig: '+ TyreLine[:-1])
             i = i + 1
-
+ 
         elif TyreLine[:19] == 'Loading engine file':
             break
-
+ 
     ac.log('PitConfig: End of tyre search on log file')
     log.close()
     os.remove('apps\python\PitConfig\AClog.txt')
@@ -117,15 +101,15 @@ else:
     with open('server\manager\ks_tyres.ini', 'r') as g:
         content = g.read()
         g.close()
-
+ 
     with open('apps\python\PitConfig\ks_tyres_adj.ini', 'w') as j:
         j.write(';')
         j.write(content)
         j.close()
-
+ 
     config = configparser.ConfigParser()
     config.read('apps\python\PitConfig\ks_tyres_adj.ini')
-
+ 
     if ac.getCarName(0) in config:
         for key in config[ac.getCarName(0)]:
             OptionLabel[i] = key
@@ -135,11 +119,12 @@ else:
     else:
         OptionLabel = ['','T1','T2','T3','T4','T5']
         ac.log('PitConfig: Mod tyres not found on ks_tyres.ini')
-
+ 
     os.remove('apps\python\PitConfig\ks_tyres_adj.ini')
-
+ 
 ac.log('PitConfig: Found AC log location: '+ logfound)
-
+ 
+#Read Config File
 configini = configparser.ConfigParser()
 configini.read('apps\python\PitConfig\PitConfig.ini')
 FuelOption = configini.getboolean('FUEL', 'ADD')
@@ -155,8 +140,12 @@ else:
     leftbordersize =  float(configini['WINDOWMODE']['leftbordersize'])
     topbordersize =  float(configini['WINDOWMODE']['topbordersize'])
 
+FullScreenOverhide = configini.getboolean('WINDOWMODE','fullscreenoverhide')
+if FullScreenOverhide == 1:
+    FullScreen = True
+    ac.log('PitConfig: Full Screen Overhide')
+ 
 #Variables initial value
-hotkey = "h"
 Tirecoord = int(Resolution / 2 - 247)
 Fuelcoord = int(Resolution / 2 + 100)
 FuelAdd = 0
@@ -178,7 +167,8 @@ adjust_x = 0
 adjust_y = 0
 PitX,PitY,PitZ = 0,0,0 #Pitbox co-ords
 AppInitialised = False #bool so can set app info on first run
-
+listen_active = True
+ 
 def acMain(ac_version):
     global appWindow,FuelSelection,FuelLabel,NoChange,Option1
     global Option2,Option3,Option4,Option5,Body,Engine,Suspension,Fill,FuelOption
@@ -380,26 +370,26 @@ def acMain(ac_version):
     ac.setFontSize(Preset4Label, 15*UiSize)
     #
     return "PitConfig"
-
+ 
 def FuelEvent(x):
     global Fill,FuelSelection,Gas,FuelAdd,FuelMax,Resolution
-
+ 
     Gas = int(ac.getValue(FuelSelection))
-
+ 
     if Gas == FuelMax:
         ac.setBackgroundTexture(Fill,"apps/python/PitConfig/img/fuel_fill_ON.png")
     else:
         ac.setBackgroundTexture(Fill,"apps/python/PitConfig/img/fuel_fill_OFF.png")
-
+ 
 def FillEvent(name, state):
     global FuelSelection,FuelMax
-
+ 
     ac.setValue(FuelSelection,int(FuelMax))
     FuelEvent(1)
-
+ 
 def NoChangeEvent(name, state):
     global NoChange,Tires,Tirecoord,Resolution
-
+ 
     Tires = "NoChange"
     Tirecoord = int(Resolution / 2 - 247)
     ac.setBackgroundTexture(NoChange,"content/gui/pitstop/tyre_no_change_ON.png")
@@ -408,10 +398,10 @@ def NoChangeEvent(name, state):
     ac.setBackgroundTexture(Option3,"content/gui/pitstop/tyre_3_OFF.png")
     ac.setBackgroundTexture(Option4,"content/gui/pitstop/tyre_4_OFF.png")
     ac.setBackgroundTexture(Option5,"content/gui/pitstop/tyre_5_OFF.png")
-
+ 
 def Option1Event(name, state):
     global Option1,Tires,Tirecoord,Resolution
-
+ 
     Tires = "Option1"
     Tirecoord = int(Resolution / 2 - 97)
     ac.setBackgroundTexture(NoChange,"content/gui/pitstop/tyre_no_change_OFF.png")
@@ -420,10 +410,10 @@ def Option1Event(name, state):
     ac.setBackgroundTexture(Option3,"content/gui/pitstop/tyre_3_OFF.png")
     ac.setBackgroundTexture(Option4,"content/gui/pitstop/tyre_4_OFF.png")
     ac.setBackgroundTexture(Option5,"content/gui/pitstop/tyre_5_OFF.png")
-
+ 
 def Option2Event(name, state):
     global Option2,Tires,Tirecoord,Resolution
-
+ 
     Tires = "Option2"
     Tirecoord = int(Resolution / 2 + 18)
     ac.setBackgroundTexture(NoChange,"content/gui/pitstop/tyre_no_change_OFF.png")
@@ -432,10 +422,10 @@ def Option2Event(name, state):
     ac.setBackgroundTexture(Option3,"content/gui/pitstop/tyre_3_OFF.png")
     ac.setBackgroundTexture(Option4,"content/gui/pitstop/tyre_4_OFF.png")
     ac.setBackgroundTexture(Option5,"content/gui/pitstop/tyre_5_OFF.png")
-
+ 
 def Option3Event(name, state):
     global Option3,Tires,Tirecoord,Resolution
-
+ 
     Tires = "Option3"
     Tirecoord = int(Resolution / 2 + 126)
     ac.setBackgroundTexture(NoChange,"content/gui/pitstop/tyre_no_change_OFF.png")
@@ -444,10 +434,10 @@ def Option3Event(name, state):
     ac.setBackgroundTexture(Option3,"content/gui/pitstop/tyre_3_ON.png")
     ac.setBackgroundTexture(Option4,"content/gui/pitstop/tyre_4_OFF.png")
     ac.setBackgroundTexture(Option5,"content/gui/pitstop/tyre_5_OFF.png")
-
+ 
 def Option4Event(name, state):
     global Option4,Tires,Tirecoord,Resolution
-
+ 
     Tires = "Option4"
     Tirecoord = int(Resolution / 2 + 238)
     ac.setBackgroundTexture(NoChange,"content/gui/pitstop/tyre_no_change_OFF.png")
@@ -456,10 +446,10 @@ def Option4Event(name, state):
     ac.setBackgroundTexture(Option3,"content/gui/pitstop/tyre_3_OFF.png")
     ac.setBackgroundTexture(Option4,"content/gui/pitstop/tyre_4_ON.png")
     ac.setBackgroundTexture(Option5,"content/gui/pitstop/tyre_5_OFF.png")
-
+ 
 def Option5Event(name, state):
     global Option5,Tires,Tirecoord,Resolution
-
+ 
     Tires = "Option5"
     Tirecoord = int(Resolution / 2 + 353)
     ac.setBackgroundTexture(NoChange,"content/gui/pitstop/tyre_no_change_OFF.png")
@@ -468,10 +458,10 @@ def Option5Event(name, state):
     ac.setBackgroundTexture(Option3,"content/gui/pitstop/tyre_3_OFF.png")
     ac.setBackgroundTexture(Option4,"content/gui/pitstop/tyre_4_OFF.png")
     ac.setBackgroundTexture(Option5,"content/gui/pitstop/tyre_5_ON.png")
-
+ 
 def BodyEvent(name, state):
     global Body,FixBody,Bodycoord,Resolution
-
+ 
     if FixBody == 'no':
         Bodycoord = int(Resolution / 2 - 2)
         FixBody = 'yes'
@@ -480,10 +470,10 @@ def BodyEvent(name, state):
         Bodycoord = int(Resolution / 2 + 140)
         FixBody = 'no'
         ac.setBackgroundTexture(Body,"content/gui/pitstop/repair_body_OFF.png")
-
+ 
 def EngineEvent(name, state):
     global Engine,FixEngine,Enginecoord,Resolution
-
+ 
     if FixEngine == 'no':
         Enginecoord = int(Resolution / 2 + 243)
         FixEngine = 'yes'
@@ -492,10 +482,10 @@ def EngineEvent(name, state):
         Enginecoord = int(Resolution / 2 + 140)
         FixEngine = 'no'
         ac.setBackgroundTexture(Engine,"content/gui/pitstop/repair_engine_OFF.png")
-
+ 
 def SuspensionEvent(name, state):
     global Suspension,FixSuspen,Suspensioncoord,Resolution
-
+ 
     if FixSuspen == 'no':
         Suspensioncoord = int(Resolution / 2 - 227)
         FixSuspen = 'yes'
@@ -504,13 +494,13 @@ def SuspensionEvent(name, state):
         Suspensioncoord = int(Resolution / 2 + 140)
         FixSuspen = 'no'
         ac.setBackgroundTexture(Suspension,"content/gui/pitstop/repair_sus_OFF.png")
-
+ 
 def PitStop():
     global Resolution,Tirecoord,FuelMax,FuelAdd,Gas,u,Suspensioncoord,Bodycoord,Enginecoord,FuelOption,FuelIn,adjust_x,adjust_y,FullScreen
-
+ 
     if FullScreen == False:
         CoordAdjust()
-
+ 
     left_click(Tirecoord + adjust_x, 140 + adjust_y)
     left_click(Tirecoord + adjust_x, 140 + adjust_y)
     u = 0
@@ -526,79 +516,61 @@ def PitStop():
             while u < FuelAdd - FuelIn:
                 left_click(Fuelcoord + adjust_x,300 + adjust_y)
                 u = u + 1
-
+ 
     left_click(Suspensioncoord + adjust_x, 465 + adjust_y)
     left_click(Bodycoord + adjust_x, 465 + adjust_y)
     left_click(Enginecoord + adjust_x, 465 + adjust_y)
     left_click(int(Resolution/2+158) + adjust_x, 620 + adjust_y)
-
+ 
 def acUpdate(deltaT):
     try:
         global Speed,DoPit,FuelMax,InPit,FuelIn,session, delta #Position,InitialPosition  vars can be removed from the code
-        global PitX,PitY,PitZ #added global variables intiliased as 0,0,0. X,Y,Z co-ords of pit box
-        global AppInitialised #added global variable intiliased as False
-
+        global PitX,PitY,PitZ #added global variables initiliased as 0,0,0. X,Y,Z co-ords of pit box
+        global AppInitialised #added global variable initiliased as False
+ 
         if not AppInitialised:  #First call to app, set variables
-            sim_info_obj = sim_info.SimInfo()
-            session = sim_info_obj.graphics.session #session number, 2 is race
-            InPit = sim_info_obj.graphics.isInPit
-            FuelMax = int(sim_info_obj.static.maxFuel)
+            InPit = info.graphics.isInPit
+            FuelMax = int(info.static.maxFuel)
             ac.setRange(FuelSelection,0,FuelMax)
-            if session != 2 or InPit: #ideally want to set pit box position in quali or practice, could join a race session on the grid
-                PitX,PitY,PitZ = ac.getCarState(0, acsys.CS.WorldPosition)
-                ac.log("PitConfig: Pit position initialized at X:" + str(PitX) + " Y:" + str(PitY) + " Z:" + str(PitZ))
             ReadPreset()
             ac.setValue(Preset1,1)
             AppInitialised = True
-
-        if PitX == 0 and InPit: #set pit position correctly if not set before
-            PitX,PitY,PitZ = ac.getCarState(0, acsys.CS.WorldPosition)
-            ac.log("PitConfig: Pit position initialized later at X:" + str(PitX) + " Y:" + str(PitY) + " Z:" + str(PitZ))
-
+ 
+        if abs(PitX) < 1e-5: #set pit position
+            InPit = info.graphics.isInPit
+            if InPit:
+                PitX,PitY,PitZ = ac.getCarState(0, acsys.CS.WorldPosition)
+                ac.log("PitConfig: Pit position initialized at X:" + str(PitX) + " Y:" + str(PitY) + " Z:" + str(PitZ))
+ 
         Speed = ac.getCarState(0,acsys.CS.SpeedKMH)
-
+ 
         if Speed < 0.1 and DoPit == 0:
-            sim_info_obj = sim_info.SimInfo()
-            session = sim_info_obj.graphics.session #session number, 2 is race
+            session = info.graphics.session #session number, 2 is race
+            InPit = info.graphics.isInPit
             if session == 2:
                 PosX,PosY,PosZ = ac.getCarState(0, acsys.CS.WorldPosition)          #current co-ord position
                 delta = ((PosX-PitX)**2 + (PosY-PitY)**2 + (PosZ-PitZ)**2)**0.5     #straight line dist between pitbox and car
-                FuelIn = int(sim_info_obj.physics.fuel)
+                FuelIn = int(info.physics.fuel)
                 if delta<8.0 or InPit == 1: #if InPit or within 8m of pitbox, quite relaxed limit guarantees app trigger on menu appear
                     PitStop()
                     ac.log("PitConfig: Pit performed at X:" + str(PosX) + " Y:" + str(PosY) + " Z:" + str(PosZ))
                     ac.log("PitConfig: Delta:" + str(delta))
             DoPit = 1
-
+ 
         if Speed >= 0.1:
             DoPit = 0
-        LookAtPreset()
-
+ 
     except Exception as e:
-        ac.log("StreamStanding: Error in acUpdate: %s" % e)
-
-
+        ac.log("PitConfig: Error in acUpdate: %s" % e)
+ 
 def left_click(x, y):
     SetCursorPos(x, y)
     mouse_event(2, 0, 0, 0, 0)
     mouse_event(4, 0, 0, 0, 0)
-
-def LookAtPreset():
-    PresetConfig = configparser.ConfigParser()
-    PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
-    selectpreset = PresetConfig['PRESET']['num']
-    if selectpreset == "1":
-        Preset1Event('name',0)
-    elif selectpreset == "2":
-        Preset2Event('name',0)
-    elif selectpreset == "3":
-        Preset3Event('name',0)
-    elif selectpreset == "4":
-        Preset4Event('name',0)
-
+ 
 def WritePreset():
     global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
-
+ 
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
     Car = PresetConfig['PRESET'+str(Preset)]['car']
@@ -611,35 +583,34 @@ def WritePreset():
         PresetConfig.set('PRESET'+str(Preset),'suspen',FixSuspen)
         with open('apps\python\PitConfig\PitConfig.ini', 'w') as configfile:
             configfile.write(';Set "FUEL / add" to "1" to ADD the fuel to the amount already in the tank or set to "0" to fill the tank up to the amount selected on the app.' + '\n')
-            configfile.write(';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n')
-            configfile.write(';Hotkey changes preset on fly' + '\n' + '\n')
+            configfile.write(';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
             PresetConfig.write(configfile)
-
+ 
 def ReadPreset():
-    global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas, hotkey
-
+    global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
+ 
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
     Car = PresetConfig['PRESET'+str(Preset)]['car']
-
+ 
     if Car == ac.getCarName(0):
         ac.setValue(FuelSelection,int(PresetConfig['PRESET'+str(Preset)]['fuel']))
-
+ 
         if PresetConfig['PRESET'+str(Preset)]['body'] == 'no':
             FixBody = 'yes'
         else:
             FixBody = 'no'
-
+ 
         if PresetConfig['PRESET'+str(Preset)]['engine'] == 'no':
             FixEngine = 'yes'
         else:
             FixEngine = 'no'
-
+ 
         if PresetConfig['PRESET'+str(Preset)]['suspen'] == 'no':
             FixSuspen = 'yes'
         else:
             FixSuspen = 'no'
-
+ 
         if PresetConfig['PRESET'+str(Preset)]['tyre'] == 'NoChange':
             NoChangeEvent('name', 0)
         elif PresetConfig['PRESET'+str(Preset)]['tyre'] == 'Option1':
@@ -652,78 +623,78 @@ def ReadPreset():
             Option4Event('name', 0)
         elif PresetConfig['PRESET'+str(Preset)]['tyre'] == 'Option5':
             Option5Event('name', 0)
-
+ 
     else:
         ac.setValue(FuelSelection,0)
         NoChangeEvent('name', 0)
         FixBody = 'yes'
         FixEngine = 'yes'
         FixSuspen = 'yes'
-
+ 
     BodyEvent('name', 0)
     EngineEvent('name', 0)
     SuspensionEvent('name', 0)
     FuelEvent(0)
-
+ 
 def Preset1Event(name, state):
     global Preset
-
-
+ 
     WritePreset()
+ 
     Preset = 1
     ac.setValue(Preset1, 1)
     ac.setValue(Preset2, 0)
     ac.setValue(Preset3, 0)
     ac.setValue(Preset4, 0)
-
+ 
     ReadPreset()
-
+ 
 def Preset2Event(name, state):
     global Preset
-
-
+ 
     WritePreset()
+ 
     Preset = 2
-    ac.setValue(Preset1, 0)
     ac.setValue(Preset2, 1)
+    ac.setValue(Preset1, 0)
     ac.setValue(Preset3, 0)
     ac.setValue(Preset4, 0)
-
+ 
     ReadPreset()
-
+ 
 def Preset3Event(name, state):
     global Preset
-
+ 
     WritePreset()
+ 
     Preset = 3
+    ac.setValue(Preset3, 1)
     ac.setValue(Preset1, 0)
     ac.setValue(Preset2, 0)
-    ac.setValue(Preset3, 1)
     ac.setValue(Preset4, 0)
-
+ 
     ReadPreset()
-
+ 
 def Preset4Event(name, state):
     global Preset
-
+ 
     WritePreset()
+ 
     Preset = 4
+    ac.setValue(Preset4, 1)
     ac.setValue(Preset1, 0)
     ac.setValue(Preset2, 0)
     ac.setValue(Preset3, 0)
-    ac.setValue(Preset4, 1)
-
+ 
     ReadPreset()
-
+ 
 def acShutdown():
-    global superhot
     WritePreset()
-    subprocess.Popen.kill(superhot)
-
-
+    ctypes.windll.user32.UnregisterHotKey(None, 1)
+ 
 def CoordAdjust():
     global adjust_x, adjust_y, leftbordersize, topbordersize, Resolution, FindWindow
-
+ 
     class RECT(ctypes.Structure):
         _fields_ = [
         ('left', ctypes.c_int),
@@ -731,14 +702,14 @@ def CoordAdjust():
         ('right', ctypes.c_int),
         ('bottom', ctypes.c_int)
         ]
-
+ 
     GetWindowRect = ctypes.windll.user32.GetWindowRect
     rect = RECT()
-
+ 
     FindWindow = ctypes.windll.user32.FindWindowA
     ACWindow = FindWindow(b'acsW',0)
     ac.log('PitConfig: Handle: ' + str(ACWindow))
-
+ 
     #GetWindowRect(foreground_window, ctypes.byref(rect))
     GetWindowRect(ACWindow, ctypes.byref(rect))
     Resolution = int(rect.right - rect.left - 2 * leftbordersize)
@@ -749,3 +720,31 @@ def CoordAdjust():
     WritePreset()
     ReadPreset()
 
+def listen_key():
+    try:
+        ctypes.windll.user32.RegisterHotKey(None, 1, 0, PitConfig_lib.win32con.VK_F10)
+        msg = ctypes.wintypes.MSG()
+        while listen_active:
+            if ctypes.windll.user32.GetMessageA(ctypes.byref(msg), None, 0, 0) != 0:
+                if msg.message == PitConfig_lib.win32con.WM_HOTKEY:
+                    hotkey_pressed()
+                ctypes.windll.user32.TranslateMessage(ctypes.byref(msg))
+                ctypes.windll.user32.DispatchMessageA(ctypes.byref(msg))
+    except:
+        ac.log('PitConfig: Hotkey fail')
+    finally:
+        ctypes.windll.user32.UnregisterHotKey(None, 1)
+
+def hotkey_pressed():
+    if Preset == 1:
+        Preset2Event('name',0)
+    elif Preset == 2:
+        Preset3Event('name',0)
+    elif Preset == 3:
+        Preset4Event('name',0)
+    elif Preset == 4:
+        Preset1Event('name',0)
+
+key_listener = threading.Thread(target=listen_key)
+key_listener.daemon = True
+key_listener.start()

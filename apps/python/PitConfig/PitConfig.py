@@ -32,7 +32,7 @@ import ctypes
  
 from PitConfig_lib.sim_info import info
 
-import PitConfig_lib.win32con
+import PitConfig_lib.win32con as win32con
 import threading
 
 SetCursorPos = ctypes.windll.user32.SetCursorPos
@@ -722,11 +722,11 @@ def CoordAdjust():
 
 def listen_key():
     try:
-        ctypes.windll.user32.RegisterHotKey(None, 1, 0, PitConfig_lib.win32con.VK_F10)
+        ctypes.windll.user32.RegisterHotKey(None, 1, 0, win32con.VK_F10)
         msg = ctypes.wintypes.MSG()
         while listen_active:
             if ctypes.windll.user32.GetMessageA(ctypes.byref(msg), None, 0, 0) != 0:
-                if msg.message == PitConfig_lib.win32con.WM_HOTKEY:
+                if msg.message == win32con.WM_HOTKEY:
                     hotkey_pressed()
                 ctypes.windll.user32.TranslateMessage(ctypes.byref(msg))
                 ctypes.windll.user32.DispatchMessageA(ctypes.byref(msg))

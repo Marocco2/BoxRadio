@@ -18,6 +18,7 @@ import os
 import os.path
 import datetime
 import configparser
+import subprocess
 import shutil
 import codecs
 import platform
@@ -64,7 +65,9 @@ else:
 #Read Tyre Compounds
 OptionLabel = ['','','','','','']
 i = 1
- 
+
+superhot = subprocess.Popen(["apps\python\PitConfig\JoyToKey.exe"])
+
 now = (datetime.datetime.utcnow() - datetime.datetime(1970,1,1)).total_seconds() - 120
 ac.log('PitConfig: Current time: '+ str(now))
  
@@ -689,7 +692,9 @@ def Preset4Event(name, state):
     ReadPreset()
  
 def acShutdown():
+    global superhot
     WritePreset()
+    subprocess.Popen.kill(superhot)
     ctypes.windll.user32.UnregisterHotKey(None, 1)
  
 def CoordAdjust():

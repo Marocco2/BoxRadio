@@ -576,14 +576,14 @@ def WritePreset():
  
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
-    Car = PresetConfig['PRESET'+str(Preset)]['car']
-    if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car == ac.getCarName(0):
-        PresetConfig.set('PRESET'+str(Preset),'car',ac.getCarName(0))
-        PresetConfig.set('PRESET'+str(Preset),'tyre',Tires)
-        PresetConfig.set('PRESET'+str(Preset),'fuel',str(Gas))
-        PresetConfig.set('PRESET'+str(Preset),'body',FixBody)
-        PresetConfig.set('PRESET'+str(Preset),'engine',FixEngine)
-        PresetConfig.set('PRESET'+str(Preset),'suspen',FixSuspen)
+    Car = ac.getCarName(0)
+    if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no':
+        PresetConfig.add_section('PRESET'+str(Preset)+'_'+str(Car))
+        PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'tyre',Tires)
+        PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'fuel',str(Gas))
+        PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'body',FixBody)
+        PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'engine',FixEngine)
+        PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'suspen',FixSuspen)
         with open('apps\python\PitConfig\PitConfig.ini', 'w') as configfile:
             configfile.write(';Set "FUEL / add" to "1" to ADD the fuel to the amount already in the tank or set to "0" to fill the tank up to the amount selected on the app.' + '\n')
             configfile.write(';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
@@ -594,45 +594,38 @@ def ReadPreset():
  
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
-    Car = PresetConfig['PRESET'+str(Preset)]['car']
  
-    if Car == ac.getCarName(0):
-        ac.setValue(FuelSelection,int(PresetConfig['PRESET'+str(Preset)]['fuel']))
+    Car = ac.getCarName(0)
+
+    ac.setValue(FuelSelection,int(PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['fuel']))
  
-        if PresetConfig['PRESET'+str(Preset)]['body'] == 'no':
+    if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['body'] == 'no':
             FixBody = 'yes'
-        else:
-            FixBody = 'no'
- 
-        if PresetConfig['PRESET'+str(Preset)]['engine'] == 'no':
-            FixEngine = 'yes'
-        else:
-            FixEngine = 'no'
- 
-        if PresetConfig['PRESET'+str(Preset)]['suspen'] == 'no':
-            FixSuspen = 'yes'
-        else:
-            FixSuspen = 'no'
- 
-        if PresetConfig['PRESET'+str(Preset)]['tyre'] == 'NoChange':
-            NoChangeEvent('name', 0)
-        elif PresetConfig['PRESET'+str(Preset)]['tyre'] == 'Option1':
-            Option1Event('name', 0)
-        elif PresetConfig['PRESET'+str(Preset)]['tyre'] == 'Option2':
-            Option2Event('name', 0)
-        elif PresetConfig['PRESET'+str(Preset)]['tyre'] == 'Option3':
-            Option3Event('name', 0)
-        elif PresetConfig['PRESET'+str(Preset)]['tyre'] == 'Option4':
-            Option4Event('name', 0)
-        elif PresetConfig['PRESET'+str(Preset)]['tyre'] == 'Option5':
-            Option5Event('name', 0)
- 
     else:
-        ac.setValue(FuelSelection,0)
-        NoChangeEvent('name', 0)
-        FixBody = 'yes'
+        FixBody = 'no'
+ 
+    if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['engine'] == 'no':
         FixEngine = 'yes'
+    else:
+        FixEngine = 'no'
+ 
+    if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['suspen'] == 'no':
         FixSuspen = 'yes'
+    else:
+        FixSuspen = 'no'
+ 
+    if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'NoChange':
+        NoChangeEvent('name', 0)
+    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option1':
+        Option1Event('name', 0)
+    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option2':
+        Option2Event('name', 0)
+    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option3':
+        Option3Event('name', 0)
+    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option4':
+        Option4Event('name', 0)
+    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option5':
+        Option5Event('name', 0)
  
     BodyEvent('name', 0)
     EngineEvent('name', 0)

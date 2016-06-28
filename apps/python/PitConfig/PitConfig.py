@@ -158,6 +158,7 @@ u = 0
 Suspensioncoord = int(Resolution / 2 + 140)
 Bodycoord = int(Resolution / 2 + 140)
 Enginecoord = int(Resolution / 2 + 140)
+Car = "lotus_exos_125_s1"
 Tires = "NoChange"
 Gas = "0"
 FixBody = "no"
@@ -570,15 +571,37 @@ def left_click(x, y):
     SetCursorPos(x, y)
     mouse_event(2, 0, 0, 0, 0)
     mouse_event(4, 0, 0, 0, 0)
- 
+
+def WriteSection():
+    global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
+
+    PresetConfig = configparser.ConfigParser()
+    PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
+    PresetConfig.add_section('PRESET'+str(Preset)+'_'+ac.getCarName(0))
+    PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'car',ac.getCarName(0))
+    PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'tyre',Tires)
+    PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'fuel',str(Gas))
+    PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'body',FixBody)
+    PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'engine',FixEngine)
+    PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'suspen',FixSuspen)
+    with open('apps\python\PitConfig\PitConfig.ini', 'w') as configfile:
+        configfile.write(';Set "FUEL / add" to "1" to ADD the fuel to the amount already in the tank or set to "0" to fill the tank up to the amount selected on the app.' + '\n')
+        configfile.write(';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
+        PresetConfig.write(configfile)
+
+    ac.log("PitConfig: Preset section added")
+
+
 def WritePreset():
     global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
  
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
-    Car = ac.getCarName(0)
-    if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no':
-        PresetConfig.add_section('PRESET'+str(Preset)+'_'+str(Car))
+    Car = PresetConfig['PRESET' + str(Preset) + '_' +ac.getCarName(0)]['car']
+    if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car != ac.getCarName(0):
+        if Car != ac.getCarName(0):
+            PresetConfig.add_section('PRESET'+str(Preset)+'_'+ac.getCarName(0))
+        PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'car',ac.getCarName(0))
         PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'tyre',Tires)
         PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'fuel',str(Gas))
         PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'body',FixBody)
@@ -594,38 +617,44 @@ def ReadPreset():
  
     PresetConfig = configparser.ConfigParser()
     PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
- 
-    Car = ac.getCarName(0)
 
-    ac.setValue(FuelSelection,int(PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['fuel']))
- 
-    if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['body'] == 'no':
+    if not 'PRESET' + str(Preset) + '_' + ac.getCarName(0) in PresetConfig:
+        WriteSection()
+
+    Car = PresetConfig['PRESET' + str(Preset) + '_' + ac.getCarName(0)]['car']
+
+    if Car == ac.getCarName(0):
+        ac.setValue(FuelSelection, int(PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['fuel']))
+        if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['body'] == 'no':
             FixBody = 'yes'
+        else:
+            FixBody = 'no'
+        if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['engine'] == 'no':
+            FixEngine = 'yes'
+        else:
+            FixEngine = 'no'
+        if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['suspen'] == 'no':
+            FixSuspen = 'yes'
+        else:
+            FixSuspen = 'no'
+        if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'NoChange':
+            NoChangeEvent('name', 0)
+        elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option1':
+            Option1Event('name', 0)
+        elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option2':
+            Option2Event('name', 0)
+        elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option3':
+            Option3Event('name', 0)
+        elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option4':
+            Option4Event('name', 0)
+        elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option5':
+            Option5Event('name', 0)
     else:
-        FixBody = 'no'
- 
-    if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['engine'] == 'no':
-        FixEngine = 'yes'
-    else:
-        FixEngine = 'no'
- 
-    if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['suspen'] == 'no':
-        FixSuspen = 'yes'
-    else:
-        FixSuspen = 'no'
- 
-    if PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'NoChange':
+        ac.setValue(FuelSelection, 0)
         NoChangeEvent('name', 0)
-    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option1':
-        Option1Event('name', 0)
-    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option2':
-        Option2Event('name', 0)
-    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option3':
-        Option3Event('name', 0)
-    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option4':
-        Option4Event('name', 0)
-    elif PresetConfig['PRESET'+str(Preset)+'_'+str(Car)]['tyre'] == 'Option5':
-        Option5Event('name', 0)
+        FixBody = 'yes'
+        FixEngine = 'yes'
+        FixSuspen = 'yes'
  
     BodyEvent('name', 0)
     EngineEvent('name', 0)
@@ -730,8 +759,6 @@ def listen_key():
                 ctypes.windll.user32.DispatchMessageA(ctypes.byref(msg))
     except:
         ac.log('PitConfig: Hotkey fail')
-    finally:
-        ctypes.windll.user32.UnregisterHotKey(None, 1)
 
 def hotkey_pressed():
     if Preset == 1:

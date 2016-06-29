@@ -1,39 +1,55 @@
 ##############################################################
-# PitConfig Ver. 1.7.1
+# BoxRadio Ver. 1.0
 #
 #
 #
-# Thanks to NAGP MadMac and AdderSwim
+# Thanks to Paolo Wallner, NAGP MadMac and AdderSwim
 #
 #
 # To activate create a folder with the same name as this file
-# in apps/python. Ex apps/python/PitConfig
+# in apps/python. Ex apps/python/BoxRadio
 # Then copy this file inside it and launch AC
 #############################################################
- 
-import ac
-import acsys
 import sys
 import os
-import os.path
+import platform
+if platform.architecture()[0] == "64bit":
+  sysdir = "stdlib64"
+else:
+  sysdir = "stdlib"
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "tsm", sysdir))
+os.environ['PATH'] = os.environ['PATH'] + ";."
+
+import ac
+import acsys
 import datetime
 import configparser
 import subprocess
 import shutil
 import codecs
-import platform
-if platform.architecture()[0] == "64bit":
-    sysdir=os.path.dirname(__file__)+'/stdlib64'
-else:
-    sysdir=os.path.dirname(__file__)+'/stdlib'
-sys.path.insert(0, sysdir)
-os.environ['PATH'] = os.environ['PATH'] + ";."
- 
+import traceback
 import ctypes
- 
-from PitConfig_lib.sim_info import info
 
-import PitConfig_lib.win32con as win32con
+importError = False
+
+try:
+	from box import box
+except Exception as m:
+    ac.log('BoxRadio: error loading box module: ' + traceback.format_exc())
+    importError = True
+try:
+    from box import sim_info as info
+except Exception as m:
+    ac.log('BoxRadio: error loading info module: ' + traceback.format_exc())
+    importError = True
+
+try:
+	from box import win32con
+except Exception as m:
+    ac.log('BoxRadio: error loading win32con module: ' + traceback.format_exc())
+    importError = True
+
 import threading
 
 SetCursorPos = ctypes.windll.user32.SetCursorPos
@@ -45,7 +61,7 @@ CSIDL_PERSONAL = 5       # My Documents
 SHGFP_TYPE_CURRENT = 0   # Get default value
 buf= ctypes.create_unicode_buffer(ctypes.wintypes.MAX_PATH)
 ctypes.windll.shell32.SHGetFolderPathW(None, CSIDL_PERSONAL, None, SHGFP_TYPE_CURRENT, buf)
-ac.log('PitConfig: Log path: ' + buf.value)
+ac.log('BoxRadio: Log path: ' + buf.value)
  
 #Check AC Resolution
 if os.path.isfile(buf.value+'/Assetto Corsa/cfg/video.ini'):
@@ -54,22 +70,22 @@ if os.path.isfile(buf.value+'/Assetto Corsa/cfg/video.ini'):
     Resolution = int(videoconfig['VIDEO']['WIDTH'])
     ResolutionHeight = int(videoconfig['VIDEO']['HEIGHT'])
     FullScreen = videoconfig.getboolean('VIDEO', 'FULLSCREEN')
-    ac.log('PitConfig: Resolution on video.ini: ' + str(Resolution))
-    ac.log('PitConfig: FullScreen on video.ini: ' + str(FullScreen))
+    ac.log('BoxRadio: Resolution on video.ini: ' + str(Resolution))
+    ac.log('BoxRadio: FullScreen on video.ini: ' + str(FullScreen))
 else:
     Resolution = ctypes.windll.user32.GetSystemMetrics(0)
     ResolutionHeight = ctypes.windll.user32.GetSystemMetrics(1)
-    ac.log('PitConfig: Resolution on SystemMetrics: ' + str(Resolution))
+    ac.log('BoxRadio: Resolution on SystemMetrics: ' + str(Resolution))
     FullScreen = True
  
 #Read Tyre Compounds
 OptionLabel = ['','','','','','']
 i = 1
 
-superhot = subprocess.Popen(["apps\python\PitConfig\JoyToKey.exe"])
+superhot = subprocess.Popen(["apps\python\BoxRadio\JoyToKey.exe"])
 
 now = (datetime.datetime.utcnow() - datetime.datetime(1970,1,1)).total_seconds() - 120
-ac.log('PitConfig: Current time: '+ str(now))
+ac.log('BoxRadio: Current time: '+ str(now))
  
 filetime = 0
 logfound = 'No'
@@ -77,59 +93,59 @@ logfound = 'No'
 if os.path.isfile(buf.value+'\Assetto Corsa\logs\log.txt'):
     filetime = os.path.getmtime(buf.value+'\Assetto Corsa\logs\log.txt')
     logfound = 'Date'
-    ac.log('PitConfig: Log file time: '+ str(filetime))
+    ac.log('BoxRadio: Log file time: '+ str(filetime))
  
 if filetime >= now:
-    shutil.copyfile(buf.value+'\Assetto Corsa\logs\log.txt', 'apps\python\PitConfig\AClog.txt')
-    ac.log('PitConfig: Log file copy Ok')
-    log = codecs.open('apps\python\PitConfig\AClog.txt', 'r', encoding='ascii', errors='ignore')
-    ac.log('PitConfig: Log file Decode Ok')
+    shutil.copyfile(buf.value+'\Assetto Corsa\logs\log.txt', 'apps\python\BoxRadio\AClog.txt')
+    ac.log('BoxRadio: Log file copy Ok')
+    log = codecs.open('apps\python\BoxRadio\AClog.txt', 'r', encoding='ascii', errors='ignore')
+    ac.log('BoxRadio: Log file Decode Ok')
     logfound = 'Ok'
  
     for TyreLine in log:
         if TyreLine[:14] == 'TYRE COMPOUND:':
             TyreShort = TyreLine[-5:-3]
             OptionLabel[i] = TyreShort.strip('(')
-            ac.log('PitConfig: '+ TyreLine[:-1])
+            ac.log('BoxRadio: '+ TyreLine[:-1])
             i = i + 1
  
         elif TyreLine[:19] == 'Loading engine file':
             break
  
-    ac.log('PitConfig: End of tyre search on log file')
+    ac.log('BoxRadio: End of tyre search on log file')
     log.close()
-    os.remove('apps\python\PitConfig\AClog.txt')
+    os.remove('apps\python\BoxRadio\AClog.txt')
 else:
-    ac.log('PitConfig: ks_tyres.ini method')
+    ac.log('BoxRadio: ks_tyres.ini method')
     with open('server\manager\ks_tyres.ini', 'r') as g:
         content = g.read()
         g.close()
  
-    with open('apps\python\PitConfig\ks_tyres_adj.ini', 'w') as j:
+    with open('apps\python\BoxRadio\ks_tyres_adj.ini', 'w') as j:
         j.write(';')
         j.write(content)
         j.close()
  
     config = configparser.ConfigParser()
-    config.read('apps\python\PitConfig\ks_tyres_adj.ini')
+    config.read('apps\python\BoxRadio\ks_tyres_adj.ini')
  
     if ac.getCarName(0) in config:
         for key in config[ac.getCarName(0)]:
             OptionLabel[i] = key
-            ac.log('PitConfig: Tyre short: '+ key)
+            ac.log('BoxRadio: Tyre short: '+ key)
             i = i + 1
-        ac.log('PitConfig: Tyres obtained from ks_tyres.ini')
+        ac.log('BoxRadio: Tyres obtained from ks_tyres.ini')
     else:
         OptionLabel = ['','T1','T2','T3','T4','T5']
-        ac.log('PitConfig: Mod tyres not found on ks_tyres.ini')
+        ac.log('BoxRadio: Mod tyres not found on ks_tyres.ini')
  
-    os.remove('apps\python\PitConfig\ks_tyres_adj.ini')
+    os.remove('apps\python\BoxRadio\ks_tyres_adj.ini')
  
-ac.log('PitConfig: Found AC log location: '+ logfound)
+ac.log('BoxRadio: Found AC log location: '+ logfound)
  
 #Read Config File
 configini = configparser.ConfigParser()
-configini.read('apps\python\PitConfig\PitConfig.ini')
+configini.read('apps\python\BoxRadio\BoxRadio.ini')
 FuelOption = configini.getboolean('FUEL', 'ADD')
 UiSize = float(configini['UI']['sizemultiplier'])
 if UiSize < 1:
@@ -146,9 +162,11 @@ else:
 FullScreenOverhide = configini.getboolean('WINDOWMODE','fullscreenoverhide')
 if FullScreenOverhide == 1:
     FullScreen = True
-    ac.log('PitConfig: Full Screen Overhide')
+    ac.log('BoxRadio: Full Screen Overhide')
  
 #Variables initial value
+Notify = ""
+Status = "Checking internet connection..."
 Tirecoord = int(Resolution / 2 - 247)
 Fuelcoord = int(Resolution / 2 + 100)
 FuelAdd = 0
@@ -174,13 +192,14 @@ AppInitialised = False #bool so can set app info on first run
 listen_active = True
  
 def acMain(ac_version):
+    global Status
     global appWindow,FuelSelection,FuelLabel,NoChange,Option1
     global Option2,Option3,Option4,Option5,Body,Engine,Suspension,Fill,FuelOption
     global Preset1,Preset2,Preset3,Preset4
     #
-    appWindow = ac.newApp("PitConfig")
-    ac.setSize(appWindow,180*UiSize,180*UiSize)
-    ac.setTitle(appWindow,"PitConfig")
+    appWindow = ac.newApp("BoxRadio")
+    ac.setSize(appWindow,180*UiSize,200*UiSize)
+    ac.setTitle(appWindow,"BoxRadio")
     ac.setBackgroundOpacity(appWindow, 0.5)
     ac.drawBorder(appWindow, 0)
     #
@@ -209,7 +228,7 @@ def acMain(ac_version):
     ac.drawBorder(Fill, 0)
     ac.setSize(Fill,20*UiSize,20*UiSize)
     ac.setPosition(Fill,95*UiSize,98*UiSize)
-    ac.setBackgroundTexture(Fill,"apps/python/PitConfig/img/fuel_fill_OFF.png")
+    ac.setBackgroundTexture(Fill,"apps/python/BoxRadio/img/fuel_fill_OFF.png")
     ac.addOnClickedListener(Fill,FillEvent)
     #
     NoChange = ac.addButton(appWindow,"")
@@ -373,7 +392,17 @@ def acMain(ac_version):
     ac.setFontColor(Preset4Label,0,0,0,1)
     ac.setFontSize(Preset4Label, 15*UiSize)
     #
-    return "PitConfig"
+    StatusLabel = ac.addLabel(appWindow, Status)
+    ac.setPosition(Preset4Label, 10 * UiSize, 170 * UiSize)
+    ac.setFontColor(Preset4Label, 0, 0, 0, 1)
+    ac.setFontSize(Preset4Label, 13 * UiSize)
+    #
+    NotificationLabel = ac.addLabel(appWindow, Notify)
+    ac.setPosition(Preset4Label, 10 * UiSize, 170 * UiSize)
+    ac.setFontColor(Preset4Label, 0, 0, 0, 1)
+    ac.setFontSize(Preset4Label, 13 * UiSize)
+    #
+    return "BoxRadio"
  
 def FuelEvent(x):
     global Fill,FuelSelection,Gas,FuelAdd,FuelMax,Resolution
@@ -381,9 +410,9 @@ def FuelEvent(x):
     Gas = int(ac.getValue(FuelSelection))
  
     if Gas == FuelMax:
-        ac.setBackgroundTexture(Fill,"apps/python/PitConfig/img/fuel_fill_ON.png")
+        ac.setBackgroundTexture(Fill,"apps/python/BoxRadio/img/fuel_fill_ON.png")
     else:
-        ac.setBackgroundTexture(Fill,"apps/python/PitConfig/img/fuel_fill_OFF.png")
+        ac.setBackgroundTexture(Fill,"apps/python/BoxRadio/img/fuel_fill_OFF.png")
  
 def FillEvent(name, state):
     global FuelSelection,FuelMax
@@ -525,7 +554,14 @@ def PitStop():
     left_click(Bodycoord + adjust_x, 465 + adjust_y)
     left_click(Enginecoord + adjust_x, 465 + adjust_y)
     left_click(int(Resolution/2+158) + adjust_x, 620 + adjust_y)
- 
+
+
+#def CheckUpdateBox():
+#   global Status
+#
+#
+#
+
 def acUpdate(deltaT):
     try:
         global Speed,DoPit,FuelMax,InPit,FuelIn,session, delta #Position,InitialPosition  vars can be removed from the code
@@ -533,6 +569,7 @@ def acUpdate(deltaT):
         global AppInitialised #added global variable initiliased as False
  
         if not AppInitialised:  #First call to app, set variables
+            #CheckUpdateBox()
             InPit = info.graphics.isInPit
             FuelMax = int(info.static.maxFuel)
             ac.setRange(FuelSelection,0,FuelMax)
@@ -544,7 +581,7 @@ def acUpdate(deltaT):
             InPit = info.graphics.isInPit
             if InPit:
                 PitX,PitY,PitZ = ac.getCarState(0, acsys.CS.WorldPosition)
-                ac.log("PitConfig: Pit position initialized at X:" + str(PitX) + " Y:" + str(PitY) + " Z:" + str(PitZ))
+                ac.log("BoxRadio: Pit position initialized at X:" + str(PitX) + " Y:" + str(PitY) + " Z:" + str(PitZ))
  
         Speed = ac.getCarState(0,acsys.CS.SpeedKMH)
  
@@ -557,15 +594,15 @@ def acUpdate(deltaT):
                 FuelIn = int(info.physics.fuel)
                 if delta<8.0 or InPit == 1: #if InPit or within 8m of pitbox, quite relaxed limit guarantees app trigger on menu appear
                     PitStop()
-                    ac.log("PitConfig: Pit performed at X:" + str(PosX) + " Y:" + str(PosY) + " Z:" + str(PosZ))
-                    ac.log("PitConfig: Delta:" + str(delta))
+                    ac.log("BoxRadio: Pit performed at X:" + str(PosX) + " Y:" + str(PosY) + " Z:" + str(PosZ))
+                    ac.log("BoxRadio: Delta:" + str(delta))
             DoPit = 1
  
         if Speed >= 0.1:
             DoPit = 0
  
     except Exception as e:
-        ac.log("PitConfig: Error in acUpdate: %s" % e)
+        ac.log("BoxRadio: Error in acUpdate: %s" % e)
  
 def left_click(x, y):
     SetCursorPos(x, y)
@@ -576,7 +613,7 @@ def WriteSection():
     global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
 
     PresetConfig = configparser.ConfigParser()
-    PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
+    PresetConfig.read('apps\python\BoxRadio\BoxRadio.ini')
     PresetConfig.add_section('PRESET'+str(Preset)+'_'+ac.getCarName(0))
     PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'car',ac.getCarName(0))
     PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'tyre',Tires)
@@ -584,19 +621,19 @@ def WriteSection():
     PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'body',FixBody)
     PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'engine',FixEngine)
     PresetConfig.set('PRESET'+str(Preset)+'_'+ac.getCarName(0),'suspen',FixSuspen)
-    with open('apps\python\PitConfig\PitConfig.ini', 'w') as configfile:
+    with open('apps\python\BoxRadio\BoxRadio.ini', 'w') as configfile:
         configfile.write(';Set "FUEL / add" to "1" to ADD the fuel to the amount already in the tank or set to "0" to fill the tank up to the amount selected on the app.' + '\n')
         configfile.write(';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
         PresetConfig.write(configfile)
 
-    ac.log("PitConfig: Preset section added")
+    ac.log("BoxRadio: Preset section added")
 
 
 def WritePreset():
     global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
  
     PresetConfig = configparser.ConfigParser()
-    PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
+    PresetConfig.read('apps\python\BoxRadio\BoxRadio.ini')
     Car = PresetConfig['PRESET' + str(Preset) + '_' +ac.getCarName(0)]['car']
     if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car != ac.getCarName(0):
         if Car != ac.getCarName(0):
@@ -607,7 +644,7 @@ def WritePreset():
         PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'body',FixBody)
         PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'engine',FixEngine)
         PresetConfig.set('PRESET'+str(Preset)+'_'+str(Car),'suspen',FixSuspen)
-        with open('apps\python\PitConfig\PitConfig.ini', 'w') as configfile:
+        with open('apps\python\BoxRadio\BoxRadio.ini', 'w') as configfile:
             configfile.write(';Set "FUEL / add" to "1" to ADD the fuel to the amount already in the tank or set to "0" to fill the tank up to the amount selected on the app.' + '\n')
             configfile.write(';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
             PresetConfig.write(configfile)
@@ -616,7 +653,7 @@ def ReadPreset():
     global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
  
     PresetConfig = configparser.ConfigParser()
-    PresetConfig.read('apps\python\PitConfig\PitConfig.ini')
+    PresetConfig.read('apps\python\BoxRadio\BoxRadio.ini')
 
     if not 'PRESET' + str(Preset) + '_' + ac.getCarName(0) in PresetConfig:
         WriteSection()
@@ -660,6 +697,9 @@ def ReadPreset():
     EngineEvent('name', 0)
     SuspensionEvent('name', 0)
     FuelEvent(0)
+
+#def ReadSpeech():
+#    global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
  
 def Preset1Event(name, state):
     global Preset
@@ -735,15 +775,15 @@ def CoordAdjust():
  
     FindWindow = ctypes.windll.user32.FindWindowA
     ACWindow = FindWindow(b'acsW',0)
-    ac.log('PitConfig: Handle: ' + str(ACWindow))
+    ac.log('BoxRadio: Handle: ' + str(ACWindow))
  
     #GetWindowRect(foreground_window, ctypes.byref(rect))
     GetWindowRect(ACWindow, ctypes.byref(rect))
     Resolution = int(rect.right - rect.left - 2 * leftbordersize)
-    ac.log('PitConfig: New Resolution: ' + str(Resolution))
+    ac.log('BoxRadio: New Resolution: ' + str(Resolution))
     adjust_x = int(rect.left + leftbordersize)
     adjust_y = int(rect.top + topbordersize)
-    ac.log('PitConfig: Res: Top '+ str(adjust_y)+ ' Left: ' + str(adjust_x))
+    ac.log('BoxRadio: Res: Top '+ str(adjust_y)+ ' Left: ' + str(adjust_x))
     WritePreset()
     ReadPreset()
 
@@ -758,7 +798,7 @@ def listen_key():
                 ctypes.windll.user32.TranslateMessage(ctypes.byref(msg))
                 ctypes.windll.user32.DispatchMessageA(ctypes.byref(msg))
     except:
-        ac.log('PitConfig: Hotkey fail')
+        ac.log('BoxRadio: Hotkey fail')
 
 def hotkey_pressed():
     if Preset == 1:

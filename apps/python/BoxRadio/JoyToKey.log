@@ -1,113 +1,125 @@
-2016/06/28 15:03:34.364 Info   Starting JoyToKey Ver5.8.2
-2016/06/28 15:03:34.364 Info   ExeFile=K:\SteamLibrary\steamapps\common\assettocorsa\apps\python\PitConfig\JoyToKey.exe
-2016/06/28 15:03:34.364 Info   ConfigDir=K:\SteamLibrary\steamapps\common\assettocorsa\apps\python\PitConfig\
-2016/06/28 15:03:34.364 Info   IniFile=K:\SteamLibrary\steamapps\common\assettocorsa\apps\python\PitConfig\JoyToKey.ini
-2016/06/28 15:03:34.364 Info   Windows Version = 6.2
-2016/06/28 15:03:34.386 Info   Loaded VistaAPI.dll (Utils\Utils.cpp#217)
-2016/06/28 15:03:34.391 Info   LicenseKey "" is not valid
-2016/06/28 15:03:34.746 Info   Loading XInput1_3.dll (Joystick.cpp#126)
-2016/06/28 15:03:34.749 Info   Initialized XInput (Joystick.cpp#144)
-2016/06/28 15:03:34.797 Info   Detected a XI joystick: XInput-0
-2016/06/28 15:03:34.797 Info   Preferred index = -1
-2016/06/28 15:03:34.797 Info   DetectJoysticks: Detected 1 XI joystick(s)
-2016/06/28 15:03:40.064 Info   Detected a DI joystick: {12DD0690-4840-11E5-8003-444553540000}, Logitech Driving Force GT USB, Logitech Driving Force GT USB
-2016/06/28 15:03:40.064 Info   Preferred index = 1
-2016/06/28 15:03:40.443 Info   numAxis = 4
-2016/06/28 15:03:40.443 Info   numPOVs = 1
-2016/06/28 15:03:40.443 Info   numButtons = 21
-2016/06/28 15:03:40.443 Info   EnumDeviceObject: Axis offset=4 type=1000002 name=Wheel axis
-2016/06/28 15:03:40.443 Info   EnumDeviceObject: Axis offset=8 type=102 name=Combined pedals
-2016/06/28 15:03:40.443 Info   EnumDeviceObject: Axis offset=12 type=502 name=Brake
-2016/06/28 15:03:40.443 Info   EnumDeviceObject: Axis offset=16 type=202 name=Accelerator
-2016/06/28 15:03:40.444 Info   Detected a DI joystick: {1BFE5AF0-D9D2-11E2-8005-444553540000}, Controller (Xbox 360 Wireless Receiver for Windows), Controller (Xbox 360 Wireless Receiver for Windows)
-2016/06/28 15:03:40.444 Info   It is an XInput device, so skipping...
-2016/06/28 15:03:40.444 Info   DetectJoysticks: Detected 1 DI joystick(s)
-2016/06/28 15:03:40.448 Info   Joystick #2: Logitech Driving Force GT USB
-2016/06/28 15:03:40.448 Info   Joystick #1: XInput Device #1
-2016/06/28 15:03:40.448 Info   2 joysticks are detected (Joystick.cpp#166)
-2016/06/28 15:03:40.504 Info   ConfigDir=K:\SteamLibrary\steamapps\common\assettocorsa\apps\python\PitConfig\*.cfg (ConfigFileManager.cpp#43)
-2016/06/28 15:03:40.544 Info   --- Loading "AppLink.dat" --- (AppLink\AppLinkManager.cpp#36)
-2016/06/28 15:03:40.580 Info   TimerInit: Initializing timer with x1 speed mode (interval = 16 msec)
-2016/06/28 15:03:40.627 Error  Accesso negato.
+2016/07/01 11:27:17.635 Info   Starting JoyToKey Ver5.8.2
+2016/07/01 11:27:17.635 Info   ExeFile=K:\SteamLibrary\steamapps\common\assettocorsa\apps\python\BoxRadio\JoyToKey.exe
+2016/07/01 11:27:17.635 Info   ConfigDir=K:\SteamLibrary\steamapps\common\assettocorsa\apps\python\BoxRadio\
+2016/07/01 11:27:17.635 Info   IniFile=K:\SteamLibrary\steamapps\common\assettocorsa\apps\python\BoxRadio\JoyToKey.ini
+2016/07/01 11:27:17.635 Info   Windows Version = 6.2
+2016/07/01 11:27:17.679 Info   Loaded VistaAPI.dll (Utils\Utils.cpp#217)
+2016/07/01 11:27:17.769 Info   LicenseKey "" is not valid
+2016/07/01 11:27:18.431 Info   Loading XInput1_3.dll (Joystick.cpp#126)
+2016/07/01 11:27:18.446 Info   Initialized XInput (Joystick.cpp#144)
+2016/07/01 11:27:18.704 Info   Detected a XI joystick: XInput-0
+2016/07/01 11:27:18.704 Info   Preferred index = -1
+2016/07/01 11:27:18.704 Info   DetectJoysticks: Detected 1 XI joystick(s)
+2016/07/01 11:27:23.451 Info   Detected a DI joystick: {1BFE5AF0-D9D2-11E2-8005-444553540000}, Controller (Xbox 360 Wireless Receiver for Windows), Controller (Xbox 360 Wireless Receiver for Windows)
+2016/07/01 11:27:23.451 Info   It is an XInput device, so skipping...
+2016/07/01 11:27:23.454 Info   Detected a DI joystick: {12DD0690-4840-11E5-8003-444553540000}, Logitech Driving Force GT USB, Logitech Driving Force GT USB
+2016/07/01 11:27:23.454 Info   Preferred index = 1
+2016/07/01 11:27:23.834 Info   numAxis = 4
+2016/07/01 11:27:23.834 Info   numPOVs = 1
+2016/07/01 11:27:23.834 Info   numButtons = 21
+2016/07/01 11:27:23.834 Info   EnumDeviceObject: Axis offset=4 type=1000002 name=Wheel axis
+2016/07/01 11:27:23.834 Info   EnumDeviceObject: Axis offset=8 type=102 name=Combined pedals
+2016/07/01 11:27:23.835 Info   EnumDeviceObject: Axis offset=12 type=502 name=Brake
+2016/07/01 11:27:23.835 Info   EnumDeviceObject: Axis offset=16 type=202 name=Accelerator
+2016/07/01 11:27:23.835 Info   DetectJoysticks: Detected 1 DI joystick(s)
+2016/07/01 11:27:23.848 Info   Joystick #2: Logitech Driving Force GT USB
+2016/07/01 11:27:23.848 Info   Joystick #1: XInput Device #1
+2016/07/01 11:27:23.848 Info   2 joysticks are detected (Joystick.cpp#166)
+2016/07/01 11:27:23.848 Info   ConfigDir=K:\SteamLibrary\steamapps\common\assettocorsa\apps\python\BoxRadio\*.cfg (ConfigFileManager.cpp#43)
+2016/07/01 11:27:23.900 Info   --- Loading "AppLink.dat" --- (AppLink\AppLinkManager.cpp#36)
+2016/07/01 11:27:23.942 Info   TimerInit: Initializing timer with x1 speed mode (interval = 16 msec)
+2016/07/01 11:27:23.995 Info   Starting in a minimized mode (JoyToKey.cpp#36)
+2016/07/01 11:44:48.168 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 15:03:40.671 Info   Starting in a minimized mode (JoyToKey.cpp#36)
-2016/06/28 15:03:40.693 Error  Accesso negato.
+2016/07/01 11:44:51.238 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 15:23:45.749 Error  Accesso negato.
+2016/07/01 11:45:03.510 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 15:24:13.300 Error  Accesso negato.
+2016/07/01 11:53:33.830 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 15:25:41.492 Error  Accesso negato.
+2016/07/01 12:02:12.134 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 15:37:36.789 Error  Accesso negato.
+2016/07/01 12:07:22.134 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 15:58:39.781 Error  Accesso negato.
+2016/07/01 12:21:13.142 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 16:42:51.684 Error  Accesso negato.
+2016/07/01 12:22:54.262 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:04:26.804 Error  Accesso negato.
+2016/07/01 12:29:31.286 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:05:11.029 Error  Accesso negato.
+2016/07/01 12:39:20.806 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:07:34.900 Error  Accesso negato.
+2016/07/01 12:43:01.142 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:08:02.677 Error  Accesso negato.
+2016/07/01 12:48:07.158 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:11:05.781 Error  Accesso negato.
+2016/07/01 13:07:07.030 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:12:28.741 Error  Accesso negato.
+2016/07/01 13:07:08.022 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:12:32.613 Error  Accesso negato.
+2016/07/01 13:07:10.966 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:12:45.573 Error  Accesso negato.
+2016/07/01 13:07:19.174 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:23:50.852 Error  Accesso negato.
+2016/07/01 13:08:16.966 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:33:17.893 Error  Accesso negato.
+2016/07/01 13:08:20.934 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:39:48.917 Error  Accesso negato.
+2016/07/01 13:08:21.110 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:42:06.901 Error  Accesso negato.
+2016/07/01 13:08:26.150 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:43:59.909 Error  Accesso negato.
+2016/07/01 13:11:03.350 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:47:38.917 Error  Accesso negato.
+2016/07/01 13:13:09.590 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 17:58:06.917 Error  Accesso negato.
+2016/07/01 13:13:09.766 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:00:42.933 Error  Accesso negato.
+2016/07/01 13:13:11.990 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:04:22.933 Error  Accesso negato.
+2016/07/01 13:13:15.158 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:08:41.077 Error  Accesso negato.
+2016/07/01 13:13:57.206 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:08:43.237 Error  Accesso negato.
+2016/07/01 13:14:38.934 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:15:04.085 Error  Accesso negato.
+2016/07/01 13:15:11.894 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:25:13.077 Error  Accesso negato.
+2016/07/01 13:15:15.110 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:32:31.077 Error  Accesso negato.
+2016/07/01 13:15:20.262 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:41:22.293 Error  Accesso negato.
+2016/07/01 13:15:24.806 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:46:24.693 Error  Accesso negato.
+2016/07/01 13:15:24.982 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:48:14.693 Error  Accesso negato.
+2016/07/01 13:15:30.374 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:51:43.701 Error  Accesso negato.
+2016/07/01 13:18:26.774 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:56:10.724 Error  Accesso negato.
+2016/07/01 13:18:41.318 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 18:58:37.764 Error  Accesso negato.
+2016/07/01 13:19:56.902 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 19:08:44.934 Error  Accesso negato.
+2016/07/01 13:20:10.358 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-2016/06/28 19:09:16.710 Error  Accesso negato.
+2016/07/01 13:20:21.318 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-28/06/2016 19:17:06 Error  Accesso negato.
+2016/07/01 13:20:27.526 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-28/06/2016 19:45:04 Error  Accesso negato.
+2016/07/01 13:20:28.102 Error  Accesso negato.
  (Utils\Utils.cpp#464)
-28/06/2016 19:45:24 Info   Received WM_QUERYENDSESSION.  Exiting... (Main.cpp#208)
-28/06/2016 19:45:24 Info   Application terminated (Utils\LogFile.cpp#20)
+2016/07/01 13:20:35.126 Error  Accesso negato.
+ (Utils\Utils.cpp#464)
+2016/07/01 13:20:36.678 Error  Accesso negato.
+ (Utils\Utils.cpp#464)
+2016/07/01 13:20:41.318 Error  Accesso negato.
+ (Utils\Utils.cpp#464)
+2016/07/01 13:20:48.742 Error  Accesso negato.
+ (Utils\Utils.cpp#464)
+2016/07/01 13:24:26.343 Error  Accesso negato.
+ (Utils\Utils.cpp#464)
+2016/07/01 14:13:26.934 Error  Accesso negato.
+ (Utils\Utils.cpp#464)
+2016/07/01 14:14:05.894 Error  Accesso negato.
+ (Utils\Utils.cpp#464)

@@ -1,3 +1,36 @@
+#
+#
+#    BBBBBBBBBBBBBBBBB        OOOOOOOOO     XXXXXXX       XXXXXXX
+#    B::::::::::::::::B     OO:::::::::OO   X:::::X       X:::::X
+#    B::::::BBBBBB:::::B  OO:::::::::::::OO X:::::X       X:::::X
+#    BB:::::B     B:::::BO:::::::OOO:::::::OX::::::X     X::::::X
+#      B::::B     B:::::BO::::::O   O::::::OXXX:::::X   X:::::XXX
+#      B::::B     B:::::BO:::::O     O:::::O   X:::::X X:::::X
+#      B::::BBBBBB:::::B O:::::O     O:::::O    X:::::X:::::X
+#      B:::::::::::::BB  O:::::O     O:::::O     X:::::::::X
+#      B::::BBBBBB:::::B O:::::O     O:::::O     X:::::::::X
+#      B::::B     B:::::BO:::::O     O:::::O    X:::::X:::::X
+#      B::::B     B:::::BO:::::O     O:::::O   X:::::X X:::::X
+#      B::::B     B:::::BO::::::O   O::::::OXXX:::::X   X:::::XXX
+#    BB:::::BBBBBB::::::BO:::::::OOO:::::::OX::::::X     X::::::X
+#    B:::::::::::::::::B  OO:::::::::::::OO X:::::X       X:::::X
+#    B::::::::::::::::B     OO:::::::::OO   X:::::X       X:::::X
+#    BBBBBBBBBBBBBBBBB        OOOOOOOOO     XXXXXXX       XXXXXXX
+#
+#
+# Assetto Corsa framework created by Marco 'Marocco2' Mollace
+#
+# version 1.0
+#
+#
+# Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in tincidunt tellus, ac interdum massa.
+# Aliquam pharetra vitae nisi non eleifend. Suspendisse quis pretium est.
+# Pellentesque congue ante risus, tincidunt blandit ipsum gravida id.
+# Nunc euismod ex eu turpis tempus hendrerit. Aliquam elementum lectus eros, ac consectetur dui vehicula eu.
+# Fusce ut purus mauris.
+#
+#
+
 import ac
 import traceback
 import os
@@ -17,6 +50,7 @@ from os.path import dirname, realpath
 import functools
 import threading
 import zipfile
+
 
 def async(func):
     @functools.wraps(func)
@@ -44,7 +78,8 @@ def getNotificationFrom(telegram_api_getUpdates):
     ac.log('BOX: Notification from Telegram: ' + var_notify)
     return var_notify
 
-#A new functions to automatize app updates for AC 
+
+# A new functions to automatize app updates for AC
 def getNewUpdate(check_link, download_link):
     try:
         r = requests.get(check_link)
@@ -64,20 +99,20 @@ def getNewUpdate(check_link, download_link):
                 try:
                     with zipfile.ZipFile(local_filename, "r") as z:
                         z.extractall(os.path.join(os.path.dirname(__file__), "temp"))  # Extracting files
-                    Update_Status = "New update is installed. Restart AC"
-                    return Update_Status
+                    update_status = "New update is installed. Restart AC"
+                    return update_status
                 except:
-                    Update_Status = "Error extracting files"
-                    return Update_Status
+                    update_status = "Error extracting files"
+                    return update_status
             except:
-                Update_Status = "Error downloading new update"
+                update_status = "Error downloading new update"
                 ac.log('BOX: error downloading new update: ' + traceback.format_exc())
-                return Update_Status
+                return update_status
         else:
-            Update_Status = "No new update"
-            ac.log('BOX: ' + Update_Status)
-            return Update_Status
+            update_status = "No new update"
+            ac.log('BOX: ' + update_status)
+            return update_status
     except:
-        Update_Status = "Error checking new update"
+        update_status = "Error checking new update"
         ac.log('BOX: error checking new update: ' + traceback.format_exc())
-        return Update_Status
+        return update_status

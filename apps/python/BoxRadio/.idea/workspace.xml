@@ -21,10 +21,10 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="BoxRadio.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="BoxRadio.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/BoxRadio.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="422">
+            <state relative-caret-position="17">
               <caret line="613" column="50" selection-start-line="613" selection-start-column="50" selection-end-line="613" selection-end-column="50" />
               <folding>
                 <element signature="e#358#368#0" expanded="true" />
@@ -43,33 +43,39 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="version.txt" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/version.txt">
+      <file leaf-file-name="box.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/box/box.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="3" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
-              <folding />
+            <state relative-caret-position="236">
+              <caret line="87" column="21" selection-start-line="87" selection-start-column="21" selection-end-line="87" selection-end-column="21" />
+              <folding>
+                <element signature="e#1512#1521#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="box.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/box/box.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1241">
-              <caret line="73" column="59" selection-start-line="73" selection-start-column="59" selection-end-line="73" selection-end-column="59" />
-              <folding>
-                <element signature="e#0#9#0" expanded="true" />
-              </folding>
+      <file leaf-file-name="readme.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/../../../readme.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+            <state split_layout="FIRST">
+              <first_editor relative-caret-position="374">
+                <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+                <folding />
+              </first_editor>
+              <second_editor />
             </state>
+          </provider>
+          <provider editor-type-id="MarkdownFxPreviewEditor">
+            <state />
           </provider>
         </entry>
       </file>
       <file leaf-file-name="py_log.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../../../../Assetto Corsa/logs/py_log.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="561">
-              <caret line="33" column="49" selection-start-line="33" selection-start-column="49" selection-end-line="33" selection-end-column="49" />
+            <state relative-caret-position="901">
+              <caret line="53" column="49" selection-start-line="53" selection-start-column="49" selection-end-line="53" selection-end-column="49" />
               <folding />
             </state>
           </provider>
@@ -78,8 +84,8 @@
       <file leaf-file-name="log.txt" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../../../../../Assetto Corsa/logs/log.txt">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="3052" column="32" selection-start-line="3052" selection-start-column="32" selection-end-line="3052" selection-end-column="32" />
+            <state relative-caret-position="246738">
+              <caret line="14514" column="25" selection-start-line="14514" selection-start-column="25" selection-end-line="14514" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -88,7 +94,7 @@
       <file leaf-file-name="thesetupmarket.py" pinned="false" current-in-tab="false">
         <entry file="file://K:/SteamLibrary/steamapps/common/assettocorsa/apps/python/thesetupmarket/thesetupmarket.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2463">
+            <state relative-caret-position="20213">
               <caret line="1191" column="0" selection-start-line="1191" selection-start-column="0" selection-end-line="1191" selection-end-column="0" />
               <folding>
                 <element signature="e#63#73#0" expanded="true" />
@@ -100,7 +106,7 @@
       <file leaf-file-name="tsm.py" pinned="false" current-in-tab="false">
         <entry file="file://K:/SteamLibrary/steamapps/common/assettocorsa/apps/python/thesetupmarket/tsm/tsm.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
+            <state relative-caret-position="255">
               <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
               <folding>
                 <element signature="e#0#9#0" expanded="true" />
@@ -131,9 +137,10 @@
         <option value="$PROJECT_DIR$/../../../../../Assetto Corsa/logs/log.txt" />
         <option value="$PROJECT_DIR$/version.txt" />
         <option value="$PROJECT_DIR$/../../../../../Assetto Corsa/logs/py_log.txt" />
-        <option value="$PROJECT_DIR$/box/box.py" />
         <option value="$PROJECT_DIR$/BoxRadio.ini" />
         <option value="$PROJECT_DIR$/BoxRadio.py" />
+        <option value="$PROJECT_DIR$/box/box.py" />
+        <option value="$PROJECT_DIR$/../../../readme.md" />
       </list>
     </option>
   </component>
@@ -227,12 +234,23 @@
         </subPane>
       </pane>
       <pane id="Scope">
-        <subPane subId="Project Files" />
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT USER_OBJECT="BoxRadio">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
       </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../../../Assetto Corsa/logs/log.txt" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../readme.md" />
     <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
@@ -415,9 +433,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="19" width="1696" height="1026" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13932449" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13932449" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -459,7 +477,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/PitConfig.ini" />
     <entry file="file://$PROJECT_DIR$/Hotkey.ahk" />
     <entry file="file://$PROJECT_DIR$/PitConfig.py" />
     <entry file="file://$PROJECT_DIR$/PitConfig.ini" />
@@ -539,7 +556,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -547,7 +563,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -555,15 +570,12 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1589">
           <caret line="14" column="1" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
-          <folding>
-            <element signature="e#563#573#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://K:/SteamLibrary/steamapps/common/assettocorsa/apps/python/thesetupmarket/tsm/tsm.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
+        <state relative-caret-position="255">
           <caret line="17" column="16" selection-start-line="17" selection-start-column="16" selection-end-line="17" selection-end-column="16" />
           <folding>
             <element signature="e#0#9#0" expanded="true" />
@@ -573,7 +585,7 @@
     </entry>
     <entry file="file://K:/SteamLibrary/steamapps/common/assettocorsa/apps/python/thesetupmarket/thesetupmarket.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2463">
+        <state relative-caret-position="20213">
           <caret line="1191" column="0" selection-start-line="1191" selection-start-column="0" selection-end-line="1191" selection-end-column="0" />
           <folding>
             <element signature="e#63#73#0" expanded="true" />
@@ -583,38 +595,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../../../Assetto Corsa/logs/log.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="3052" column="32" selection-start-line="3052" selection-start-column="32" selection-end-line="3052" selection-end-column="32" />
+        <state relative-caret-position="246738">
+          <caret line="14514" column="25" selection-start-line="14514" selection-start-column="25" selection-end-line="14514" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/../../../../../Assetto Corsa/logs/py_log.txt">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="561">
-          <caret line="33" column="49" selection-start-line="33" selection-start-column="49" selection-end-line="33" selection-end-column="49" />
+        <state relative-caret-position="901">
+          <caret line="53" column="49" selection-start-line="53" selection-start-column="49" selection-end-line="53" selection-end-column="49" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/box/box.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1241">
-          <caret line="73" column="59" selection-start-line="73" selection-start-column="59" selection-end-line="73" selection-end-column="59" />
-          <folding>
-            <element signature="e#0#9#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/version.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="3" selection-start-line="0" selection-start-column="3" selection-end-line="0" selection-end-column="3" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/version.txt" />
     <entry file="file://$PROJECT_DIR$/BoxRadio.ini">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="68">
@@ -625,11 +620,41 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/BoxRadio.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
+        <state relative-caret-position="17">
           <caret line="613" column="50" selection-start-line="613" selection-start-column="50" selection-end-line="613" selection-end-column="50" />
           <folding>
             <element signature="e#358#368#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/box/box.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="87" column="21" selection-start-line="87" selection-start-column="21" selection-end-line="87" selection-end-column="21" />
+          <folding>
+            <element signature="e#1512#1521#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../../../readme.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="FIRST">
+          <first_editor relative-caret-position="374">
+            <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+      <provider editor-type-id="MarkdownFxPreviewEditor">
+        <state />
+      </provider>
+      <provider editor-type-id="text-editor">
+        <state relative-caret-position="119">
+          <caret line="7" column="24" selection-start-line="7" selection-start-column="24" selection-end-line="7" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>

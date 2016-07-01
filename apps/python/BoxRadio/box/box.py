@@ -5,7 +5,7 @@ import os
 try:
     import ctypes.wintypes
 except:
-    ac.log('BoxRadio: error loading ctypes.wintypes: ' + traceback.format_exc())
+    ac.log('BOX: error loading ctypes.wintypes: ' + traceback.format_exc())
     raise
 
 from ctypes.wintypes import MAX_PATH
@@ -16,7 +16,7 @@ from os.path import dirname, realpath
 
 import functools
 import threading
-
+import zipfile
 
 def async(func):
     @functools.wraps(func)
@@ -32,26 +32,26 @@ def async(func):
 try:
     from box_lib import requests
 except Exception as e:
-    ac.log('BoxRadio: error loading requests: ' + traceback.format_exc())
+    ac.log('BOX: error loading requests: ' + traceback.format_exc())
     raise
 
 
-# A useful push notification if I need send some news
+# A useful push notification via Telegram if I need send some news
 def getNotificationFrom(telegram_api_getUpdates):
     r = requests.get(telegram_api_getUpdates)
     message = r.json()
     var_notify = message["result"][-1]["message"]["text"]
-    ac.log('BoxRadio: Notification from Telegram: ' + var_notify)
+    ac.log('BOX: Notification from Telegram: ' + var_notify)
     return var_notify
 
-@async
+#A new functions to automatize app updates for AC 
 def getNewUpdate(check_link, download_link):
     try:
         r = requests.get(check_link)
         with open('version.txt', 'r') as g:
             version = g.read()
             g.close()
-        if r.json() != version:
+        if r.json() != version:  # Check if server version and client version is the same
             try:
                 local_filename = download_link.split('/')[-1]
                 # NOTE the stream=True parameter
@@ -61,8 +61,23 @@ def getNewUpdate(check_link, download_link):
                         if chunk:  # filter out keep-alive new chunks
                             f.write(chunk)
                             # f.flush() commented by recommendation from J.F.Sebastian
-                return local_filename
+                try:
+                    with zipfile.ZipFile(local_filename, "r") as z:
+                        z.extractall(os.path.join(os.path.dirname(__file__), "temp"))  # Extracting files
+                    Update_Status = "New update is installed. Restart AC"
+                    return Update_Status
+                except:
+                    Update_Status = "Error extracting files"
+                    return Update_Status
             except:
-                donothing=1
+                Update_Status = "Error downloading new update"
+                ac.log('BOX: error downloading new update: ' + traceback.format_exc())
+                return Update_Status
+        else:
+            Update_Status = "No new update"
+            ac.log('BOX: ' + Update_Status)
+            return Update_Status
     except:
-        ac.log('BoxRadio: error check new update: ' + traceback.format_exc())
+        Update_Status = "Error checking new update"
+        ac.log('BOX: error checking new update: ' + traceback.format_exc())
+        return Update_Status

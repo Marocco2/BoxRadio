@@ -165,6 +165,7 @@ FullScreenOverhide = configini.getboolean('WINDOWMODE', 'fullscreenoverhide')
 if FullScreenOverhide == 1:
     FullScreen = True
     ac.log('BoxRadio: Full Screen Overhide')
+AutoUpdate = configini.getboolean('SETTINGS','AUTOUPDATE')
 
 # Variables initial value
 Notify = ""
@@ -571,11 +572,19 @@ def PitStop():
     left_click(Enginecoord + adjust_x, 465 + adjust_y)
     left_click(int(Resolution / 2 + 158) + adjust_x, 620 + adjust_y)
 
-# def CheckUpdateBox():
-#   global Status
-#
-#
-#
+
+def CheckNewUpdate():
+    global Status, StatusLabel
+    try:
+        Status = box.getNewUpdate(
+            'https://raw.githubusercontent.com/Marocco2/BoxRadio/shipping/apps/python/BoxRadio/version.txt',
+            'https://github.com/Marocco2/BoxRadio/archive/shipping.zip')
+        ac.setText(StatusLabel, Status)
+    except:
+        ac.log('BoxRadio: No internet connection')
+        Status = "No internet connection"
+        ac.setText(StatusLabel, Status)
+
 
 def getNotification():
     global Notify, NotificationLabel, StatusLabel
@@ -597,8 +606,9 @@ def acUpdate(deltaT):
         global Notify
 
         if not AppInitialised:  # First call to app, set variables
-            # CheckUpdateBox()
             getNotification()
+            if AutoUpdate:
+                CheckNewUpdate()
             InPit = sim_info.sim_info.graphics.isInPit
             FuelMax = int(sim_info.sim_info.static.maxFuel)
             ac.setRange(FuelSelection, 0, FuelMax)

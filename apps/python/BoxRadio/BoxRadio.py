@@ -577,6 +577,18 @@ def PitStop():
 #
 #
 
+def getNotification():
+    global Notify, NotificationLabel, StatusLabel
+    try:
+        Notify = box.getNotificationFrom(
+            'http://api.telegram.org/bot243075740:AAEuscXHE-VaQCwZuWpytMzmC3Iwhopub6E/getUpdates')
+        ac.setText(NotificationLabel, Notify)
+    except:
+        ac.log('BoxRadio: No internet connection')
+        Status = "No internet connection"
+        ac.setText(StatusLabel, Status)
+
+
 def acUpdate(deltaT):
     try:
         global Speed, DoPit, FuelMax, InPit, FuelIn, session, delta  # Position,InitialPosition  vars can be removed from the code
@@ -674,17 +686,6 @@ def WritePreset():
                 ';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
             PresetConfig.write(configfile)
 
-def getNotification():
-    global Notify, NotificationLabel, StatusLabel
-    try:
-        Notify = box.getNotificationFrom(
-            'http://api.telegram.org/bot243075740:AAEuscXHE-VaQCwZuWpytMzmC3Iwhopub6E/getUpdates')
-        ac.setText(NotificationLabel, Notify)
-        ac.log('BoxRadio: New notification:' + Notify)
-    except:
-        ac.log('BoxRadio: No internet connection')
-        Status = "No internet connection"
-        ac.setText(StatusLabel, Status)
 
 def ReadPreset():
     global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas

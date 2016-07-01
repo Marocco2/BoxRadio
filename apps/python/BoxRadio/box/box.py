@@ -41,11 +41,28 @@ def getNotificationFrom(telegram_api_getUpdates):
     r = requests.get(telegram_api_getUpdates)
     message = r.json()
     var_notify = message["result"][-1]["message"]["text"]
-    #ac.log('BoxRadio: Notification from Telegram:' + var_notify)
+    ac.log('BoxRadio: Notification from Telegram: ' + var_notify)
     return var_notify
 
-# @async
-# def getNewUpdate(check_link, download_link):
-#    try:
-#
-#    except:
+@async
+def getNewUpdate(check_link, download_link):
+    try:
+        r = requests.get(check_link)
+        with open('version.txt', 'r') as g:
+            version = g.read()
+            g.close()
+        if r.json() != version:
+            try:
+                local_filename = download_link.split('/')[-1]
+                # NOTE the stream=True parameter
+                r = requests.get(download_link, stream=True)
+                with open(local_filename, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=1024):
+                        if chunk:  # filter out keep-alive new chunks
+                            f.write(chunk)
+                            # f.flush() commented by recommendation from J.F.Sebastian
+                return local_filename
+            except:
+                donothing=1
+    except:
+        ac.log('BoxRadio: error check new update: ' + traceback.format_exc())

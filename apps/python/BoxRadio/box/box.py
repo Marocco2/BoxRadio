@@ -20,20 +20,18 @@
 #
 # Assetto Corsa framework created by Marco 'Marocco2' Mollace
 #
-# version 1.0
+# version 0.1
 #
-#
-# Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer in tincidunt tellus, ac interdum massa.
-# Aliquam pharetra vitae nisi non eleifend. Suspendisse quis pretium est.
-# Pellentesque congue ante risus, tincidunt blandit ipsum gravida id.
-# Nunc euismod ex eu turpis tempus hendrerit. Aliquam elementum lectus eros, ac consectetur dui vehicula eu.
-# Fusce ut purus mauris.
+# Usage of this library is under LGPLv3. Be careful :)
 #
 #
 
 import ac
 import traceback
 import os
+
+version = "0.1"
+ac.log('BOX: VERSION ' + version)
 
 try:
     import ctypes.wintypes
@@ -80,6 +78,8 @@ def getNotificationFrom(telegram_api_getUpdates):
 
 
 # A new functions to automatize app updates for AC
+# WORK IN PROGRESS
+# TODO: make reorder files logic
 def getNewUpdate(check_link, download_link):
     try:
         r = requests.get(check_link)
@@ -99,6 +99,9 @@ def getNewUpdate(check_link, download_link):
                 try:
                     with zipfile.ZipFile(local_filename, "r") as z:
                         z.extractall(os.path.join(os.path.dirname(__file__), "temp"))  # Extracting files
+                    #
+                    # Missing reorder files logic
+                    #
                     update_status = "New update is installed. Restart AC"
                     return update_status
                 except:

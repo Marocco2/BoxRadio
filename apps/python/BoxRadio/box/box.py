@@ -64,7 +64,7 @@ def async(func):
 
 
 try:
-    from box_lib import requests
+    import requests
 except Exception as e:
     ac.log('BOX: error loading requests: ' + traceback.format_exc())
     raise

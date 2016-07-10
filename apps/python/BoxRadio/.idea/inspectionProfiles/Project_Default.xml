@@ -6,6 +6,7 @@
         <list>
           <option value="ac" />
           <option value="acsys" />
+          <option value="ac.*" />
         </list>
       </option>
     </inspection_tool>

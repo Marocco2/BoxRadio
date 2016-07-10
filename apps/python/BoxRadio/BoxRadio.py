@@ -576,9 +576,7 @@ def PitStop():
 def CheckNewUpdate():
     global Status, StatusLabel
     try:
-        Status = box.getNewUpdate(
-            'https://raw.githubusercontent.com/Marocco2/BoxRadio/shipping/apps/python/BoxRadio/version.txt',
-            'https://github.com/Marocco2/BoxRadio/archive/shipping.zip')
+        Status = box.github_newupdate('Marocco2/BoxRadio', 'shipping')
         ac.setText(StatusLabel, Status)
     except:
         ac.log('BoxRadio: No internet connection')
@@ -589,8 +587,7 @@ def CheckNewUpdate():
 def getNotification():
     global Notify, NotificationLabel, StatusLabel
     try:
-        Notify = box.getNotificationFrom(
-            'http://api.telegram.org/bot243075740:AAEuscXHE-VaQCwZuWpytMzmC3Iwhopub6E/getUpdates')
+        Notify = box.NotifyFrom('243075740:AAEuscXHE-VaQCwZuWpytMzmC3Iwhopub6E')
         ac.setText(NotificationLabel, Notify)
     except:
         ac.log('BoxRadio: No internet connection')

@@ -36,18 +36,18 @@ import threading
 importError = False
 
 try:
-    from box import box
+    from BOX import box
 except:
     ac.log('BoxRadio: error loading box module: ' + traceback.format_exc())
     importError = True
 try:
-    from box import sim_info
+    from BOX import sim_info
 except:
     ac.log('BoxRadio: error loading sim_info module: ' + traceback.format_exc())
     importError = True
 
 try:
-    from box import win32con
+    from BOX import win32con
 except:
     ac.log('BoxRadio: error loading win32con module: ' + traceback.format_exc())
     importError = True

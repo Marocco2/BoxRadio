@@ -10,6 +10,7 @@
 # in apps/python. Ex apps/python/BoxRadio
 # Then copy this file inside it and launch AC
 #############################################################
+import ac
 import sys
 import os
 import platform
@@ -22,7 +23,6 @@ else:
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "box", sysdir))
 os.environ['PATH'] = os.environ['PATH'] + ";."
 
-import ac
 import acsys
 import datetime
 import configparser

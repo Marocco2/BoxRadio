@@ -1,3 +1,4 @@
-apps/python/BoxRadio/PitConfig.ini
-apps/python/BoxRadio/.idea
-apps/python/BoxRadio/JoyToKey.log
+PitConfig.ini
+.idea
+JoyToKey.log
+sha.txt

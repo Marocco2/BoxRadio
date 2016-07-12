@@ -36,20 +36,9 @@ import threading
 importError = False
 
 try:
-    from BOX import box
+    from BOX import box, sim_info, win32con
 except:
-    ac.log('BoxRadio: error loading box module: ' + traceback.format_exc())
-    importError = True
-try:
-    from BOX import sim_info
-except:
-    ac.log('BoxRadio: error loading sim_info module: ' + traceback.format_exc())
-    importError = True
-
-try:
-    from BOX import win32con
-except:
-    ac.log('BoxRadio: error loading win32con module: ' + traceback.format_exc())
+    ac.log('BoxRadio: error loading BOX modules: ' + traceback.format_exc())
     importError = True
 
 SetCursorPos = ctypes.windll.user32.SetCursorPos
@@ -165,7 +154,8 @@ FullScreenOverhide = configini.getboolean('WINDOWMODE', 'fullscreenoverhide')
 if FullScreenOverhide == 1:
     FullScreen = True
     ac.log('BoxRadio: Full Screen Overhide')
-AutoUpdate = configini.getboolean('SETTINGS','AUTOUPDATE')
+branch = configini.get('SETTINGS', 'branch')
+AutoUpdate = configini.getboolean('SETTINGS', 'AUTOUPDATE')
 
 # Variables initial value
 Notify = ""
@@ -574,9 +564,9 @@ def PitStop():
 
 
 def CheckNewUpdate():
-    global Status, StatusLabel
+    global Status, StatusLabel, branch
     try:
-        Status = box.github_newupdate('Marocco2/BoxRadio', 'shipping')
+        Status = box.github_newupdate('Marocco2/BoxRadio', branch)
         ac.setText(StatusLabel, Status)
     except:
         ac.log('BoxRadio: No internet connection')
@@ -587,7 +577,7 @@ def CheckNewUpdate():
 def getNotification():
     global Notify, NotificationLabel, StatusLabel
     try:
-        Notify = box.NotifyFrom('243075740:AAEuscXHE-VaQCwZuWpytMzmC3Iwhopub6E')
+        Notify = box.notification('243075740:AAEuscXHE-VaQCwZuWpytMzmC3Iwhopub6E')
         ac.setText(NotificationLabel, Notify)
     except:
         ac.log('BoxRadio: No internet connection')

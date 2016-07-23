@@ -160,7 +160,7 @@ AutoUpdate = configini.getboolean('SETTINGS', 'AUTOUPDATE')
 
 # Variables initial value
 Notify = ""
-Status = "Checking internet connection..."
+Status = "Auto update disabled"
 Tirecoord = int(Resolution / 2 - 247)
 Fuelcoord = int(Resolution / 2 + 100)
 FuelAdd = 0

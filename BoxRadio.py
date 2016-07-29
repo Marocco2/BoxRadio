@@ -26,7 +26,6 @@ os.environ['PATH'] = os.environ['PATH'] + ";."
 import acsys
 import datetime
 import configparser
-import subprocess
 import shutil
 import codecs
 import traceback
@@ -36,10 +35,12 @@ import threading
 importError = False
 
 try:
-    from BOX import box, sim_info, win32con
+    from BOX import box, win32con
 except:
     ac.log('BoxRadio: error loading BOX modules: ' + traceback.format_exc())
     importError = True
+
+from BOX.sim_info import info
 
 SetCursorPos = ctypes.windll.user32.SetCursorPos
 mouse_event = ctypes.windll.user32.mouse_event
@@ -72,7 +73,7 @@ else:
 OptionLabel = ['', '', '', '', '', '']
 i = 1
 
-superhot = subprocess.Popen(["apps\python\BoxRadio\JoyToKey.exe"])
+# superhot = subprocess.Popen(["apps\python\BoxRadio\JoyToKey.exe"])
 
 now = (datetime.datetime.utcnow() - datetime.datetime(1970, 1, 1)).total_seconds() - 120
 ac.log('BoxRadio: Current time: ' + str(now))
@@ -159,7 +160,7 @@ AutoUpdate = configini.getboolean('SETTINGS', 'AUTOUPDATE')
 
 # Variables initial value
 Notify = ""
-Status = "Checking internet connection..."
+Status = "Auto update disabled"
 Tirecoord = int(Resolution / 2 - 247)
 Fuelcoord = int(Resolution / 2 + 100)
 FuelAdd = 0
@@ -596,15 +597,15 @@ def acUpdate(deltaT):
             getNotification()
             if AutoUpdate:
                 CheckNewUpdate()
-            InPit = sim_info.sim_info.graphics.isInPit
-            FuelMax = int(sim_info.sim_info.static.maxFuel)
+            InPit = info.graphics.isInPit
+            FuelMax = int(info.static.maxFuel)
             ac.setRange(FuelSelection, 0, FuelMax)
             ReadPreset()
             ac.setValue(Preset1, 1)
             AppInitialised = True
 
         if abs(PitX) < 1e-5:  # set pit position
-            InPit = sim_info.sim_info.graphics.isInPit
+            InPit = info.graphics.isInPit
             if InPit:
                 PitX, PitY, PitZ = ac.getCarState(0, acsys.CS.WorldPosition)
                 ac.log("BoxRadio: Pit position initialized at X:" + str(PitX) + " Y:" + str(PitY) + " Z:" + str(PitZ))
@@ -612,13 +613,12 @@ def acUpdate(deltaT):
         Speed = ac.getCarState(0, acsys.CS.SpeedKMH)
 
         if Speed < 0.1 and DoPit == 0:
-            session = sim_info.sim_info.graphics.session  # session number, 2 is race
-            InPit = sim_info.sim_info.graphics.isInPit
+            session = info.graphics.session  # session number, 2 is race
+            InPit = info.graphics.isInPit
             if session == 2:
                 PosX, PosY, PosZ = ac.getCarState(0, acsys.CS.WorldPosition)  # current co-ord position
-                delta = ((PosX - PitX) ** 2 + (PosY - PitY) ** 2 + (
-                    PosZ - PitZ) ** 2) ** 0.5  # straight line dist between pitbox and car
-                FuelIn = int(sim_info.sim_info.physics.fuel)
+                delta = ((PosX - PitX) ** 2 + (PosY - PitY) ** 2 + (PosZ - PitZ) ** 2) ** 0.5  # straight line dist between pitbox and car
+                FuelIn = int(info.physics.fuel)
                 if delta < 8.0 or InPit == 1:  # if InPit or within 8m of pitbox, quite relaxed limit guarantees app trigger on menu appear
                     PitStop()
                     ac.log("BoxRadio: Pit performed at X:" + str(PosX) + " Y:" + str(PosY) + " Z:" + str(PosZ))
@@ -641,21 +641,27 @@ def left_click(x, y):
 def WriteSection():
     global Car, FixBody, FixEngine, FixSuspen, Preset, Tires, Gas
 
-    PresetConfig = configparser.ConfigParser()
-    PresetConfig.read('apps\python\BoxRadio\BoxRadio.ini')
-    PresetConfig.add_section('PRESET' + str(Preset) + '_' + ac.getCarName(0))
-    PresetConfig.set('PRESET' + str(Preset) + '_' + ac.getCarName(0), 'car', ac.getCarName(0))
-    PresetConfig.set('PRESET' + str(Preset) + '_' + ac.getCarName(0), 'tyre', Tires)
-    PresetConfig.set('PRESET' + str(Preset) + '_' + ac.getCarName(0), 'fuel', str(Gas))
-    PresetConfig.set('PRESET' + str(Preset) + '_' + ac.getCarName(0), 'body', FixBody)
-    PresetConfig.set('PRESET' + str(Preset) + '_' + ac.getCarName(0), 'engine', FixEngine)
-    PresetConfig.set('PRESET' + str(Preset) + '_' + ac.getCarName(0), 'suspen', FixSuspen)
-    with open('apps\python\BoxRadio\BoxRadio.ini', 'w') as configfile:
-        configfile.write(
-            ';Set "FUEL / add" to "1" to ADD the fuel to the amount already in the tank or set to "0" to fill the tank up to the amount selected on the app.' + '\n')
-        configfile.write(
-            ';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
-        PresetConfig.write(configfile)
+    def NewSection(NewPreset):
+        PresetConfig = configparser.ConfigParser()
+        PresetConfig.read('apps\python\BoxRadio\BoxRadio.ini')
+        PresetConfig.add_section('PRESET' + str(NewPreset) + '_' + ac.getCarName(0))
+        PresetConfig.set('PRESET' + str(NewPreset) + '_' + ac.getCarName(0), 'car', ac.getCarName(0))
+        PresetConfig.set('PRESET' + str(NewPreset) + '_' + ac.getCarName(0), 'tyre', Tires)
+        PresetConfig.set('PRESET' + str(NewPreset) + '_' + ac.getCarName(0), 'fuel', str(Gas))
+        PresetConfig.set('PRESET' + str(NewPreset) + '_' + ac.getCarName(0), 'body', FixBody)
+        PresetConfig.set('PRESET' + str(NewPreset) + '_' + ac.getCarName(0), 'engine', FixEngine)
+        PresetConfig.set('PRESET' + str(NewPreset) + '_' + ac.getCarName(0), 'suspen', FixSuspen)
+        with open('apps\python\BoxRadio\BoxRadio.ini', 'w') as configfile:
+            configfile.write(
+                ';Set "FUEL / add" to "1" to ADD the fuel to the amount already in the tank or set to "0" to fill the tank up to the amount selected on the app.' + '\n')
+            configfile.write(
+                ';UI Size example: Set "UI / sizemultiplier" to "1.2" in order to increase UI size in 20% (min: 1.0, max: 3.0)' + '\n' + '\n')
+            PresetConfig.write(configfile)
+
+    NewSection(1)
+    NewSection(2)
+    NewSection(3)
+    NewSection(4)
 
     ac.log("BoxRadio: Preset section added")
 
@@ -668,8 +674,6 @@ def WritePreset():
     Car = PresetConfig['PRESET' + str(Preset) + '_' + ac.getCarName(0)]['car']
     if Tires != 'NoChange' or Gas != 0 or FixBody != 'no' or FixEngine != 'no' or FixSuspen != 'no' or Car != ac.getCarName(
             0):
-        if Car != ac.getCarName(0):
-            PresetConfig.add_section('PRESET' + str(Preset) + '_' + ac.getCarName(0))
         PresetConfig.set('PRESET' + str(Preset) + '_' + str(Car), 'car', ac.getCarName(0))
         PresetConfig.set('PRESET' + str(Preset) + '_' + str(Car), 'tyre', Tires)
         PresetConfig.set('PRESET' + str(Preset) + '_' + str(Car), 'fuel', str(Gas))
@@ -794,9 +798,9 @@ def Preset4Event(name, state):
 
 
 def acShutdown():
-    global superhot
+    # global superhot
     WritePreset()
-    subprocess.Popen.kill(superhot)
+    # subprocess.Popen.kill(superhot)
     ctypes.windll.user32.UnregisterHotKey(None, 1)
 
 
